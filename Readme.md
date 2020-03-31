@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Олег Сорокин](https://up.htmlacademy.ru/ecmascript/11/user/30818).
-* Наставник: `Неизвестно`.
+* Наставник: [keksobot](https://github.com/keksobot).
 
 ---
 
