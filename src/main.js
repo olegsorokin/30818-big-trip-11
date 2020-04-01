@@ -18,12 +18,6 @@ const createTripInfoTemplate = () => {
   );
 };
 
-const createTripCostTemplate = () => {
-  return (
-    ``
-  );
-};
-
 const createSiteMenuTemplate = () => {
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -330,7 +324,7 @@ const createPointTemplate = () => {
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
-}
+};
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = document.querySelector(`.trip-controls`);
