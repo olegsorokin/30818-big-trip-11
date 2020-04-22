@@ -1,5 +1,5 @@
 import {formatTime} from "../utils";
-import {placeTypes} from "../const";
+import {activityTypes} from "../const";
 
 const createOffersMarkup = (offers) => {
   return offers.length === 0 ? `` : offers
@@ -25,7 +25,7 @@ export const createPointTemplate = (point) => {
   const getEndTime = () => formatTime(endTime);
   const duration = `30M`;
   const getTitle = () => {
-    return placeTypes.includes(type) ? `${type} in ${city}` : `${type} to ${city}`;
+    return activityTypes.includes(type) ? `${type} in ${city}` : `${type} to ${city}`;
   };
 
   return (

@@ -10,7 +10,6 @@ import {generatePoints} from "./mock/point";
 
 const POINT_COUNT = 15;
 const points = generatePoints(POINT_COUNT);
-console.log(points)
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);

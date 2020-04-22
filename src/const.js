@@ -2,12 +2,12 @@ const transferTypes = [
   `taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`
 ];
 
-const placeTypes = [
+const activityTypes = [
   `check-in`, `sightseeing`, `restaurant`
 ];
 
 const cities = [
-  `Amsterdam`, `Chamonix`, `Geneva`
+  `Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`
 ];
 
 const offers = [
@@ -30,7 +30,12 @@ const offers = [
     type: `seats`,
     title: `Choose seats`,
     price: 9
+  },
+  {
+    type: `train`,
+    title: `Travel by train`,
+    price: 40
   }
 ];
 
-export {cities, offers, placeTypes, transferTypes};
+export {cities, offers, activityTypes, transferTypes};

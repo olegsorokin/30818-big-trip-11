@@ -27,3 +27,19 @@ export const addRandomMinutes = (time) => {
 export const formatTime = (time) => {
   return time.toLocaleTimeString(`en-US`, {hour: `2-digit`, minute: `2-digit`, hour12: false});
 }
+
+export const formatDate = (time) => {
+  const formattedDate = time.toLocaleDateString(`en-US`, {
+    year: `2-digit`,
+    month: `2-digit`,
+    day: `2-digit`
+  });
+
+  const formattedTime = time.toLocaleTimeString(`en-US`, {
+    hour: `2-digit`,
+    minute: `2-digit`,
+    hour12: false
+  });
+
+  return `${formattedDate} ${formattedTime}`;
+}
