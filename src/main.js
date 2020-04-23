@@ -20,7 +20,7 @@ const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 const siteMenuTitle = document.querySelector(`.trip-controls h2:first-child`);
 
-render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+render(tripMainElement, createTripInfoTemplate(points), `afterbegin`);
 render(siteMenuTitle, createSiteMenuTemplate(), `afterend`);
 render(tripControlsElement, createFilterTemplate(), `beforeend`);
 render(tripEventsElement, createSortTemplate(), `beforeend`);
@@ -33,6 +33,5 @@ render(daysListElement, createDayTemplate(), `beforeend`);
 
 const eventsListElement = document.querySelector(`.trip-events__list`);
 
-for (let i = 1; i < points.length; i++) {
-  render(eventsListElement, createPointTemplate(points[i]), `beforeend`);
-}
+points.slice(1)
+  .forEach((point) => render(eventsListElement, createPointTemplate(point), `beforeend`));

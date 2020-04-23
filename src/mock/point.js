@@ -50,7 +50,8 @@ const generatePoint = () => {
 const generatePoints = (count) => {
   return new Array(count)
     .fill(``)
-    .map(generatePoint);
+    .map(generatePoint)
+    .sort((a, b) => a.startTime - b.startTime);
 };
 
 export {generatePoints};
