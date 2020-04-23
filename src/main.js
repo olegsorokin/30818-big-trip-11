@@ -7,6 +7,7 @@ import {createSiteMenuTemplate} from "./components/site-menu";
 import {createSortTemplate} from "./components/sort";
 import {createTripInfoTemplate} from "./components/trip-info";
 import {generatePoints} from "./mock/point";
+import {filters} from "./const";
 
 const POINT_COUNT = 15;
 const points = generatePoints(POINT_COUNT);
@@ -22,7 +23,7 @@ const siteMenuTitle = document.querySelector(`.trip-controls h2:first-child`);
 
 render(tripMainElement, createTripInfoTemplate(points), `afterbegin`);
 render(siteMenuTitle, createSiteMenuTemplate(), `afterend`);
-render(tripControlsElement, createFilterTemplate(), `beforeend`);
+render(tripControlsElement, createFilterTemplate(filters), `beforeend`);
 render(tripEventsElement, createSortTemplate(), `beforeend`);
 render(tripEventsElement, createPointEditTemplate(points[0]), `beforeend`);
 render(tripEventsElement, createDaysListTemplate(), `beforeend`);
