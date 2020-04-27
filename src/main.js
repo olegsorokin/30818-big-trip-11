@@ -8,9 +8,11 @@ import {createSortTemplate} from "./components/sort";
 import {createTripInfoTemplate} from "./components/trip-info";
 import {generatePoints} from "./mock/point";
 import {filters} from "./const";
+import {getDate} from "./utils";
 
 const POINT_COUNT = 15;
 const points = generatePoints(POINT_COUNT);
+const uniqueDates = new Set(points.map((point) => getDate(point.startTime)));
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -30,9 +32,14 @@ render(tripEventsElement, createDaysListTemplate(), `beforeend`);
 
 const daysListElement = document.querySelector(`.trip-days`);
 
-render(daysListElement, createDayTemplate(), `beforeend`);
+[...uniqueDates]
+  .forEach((uniqueDate, index) => {
+    render(daysListElement, createDayTemplate(uniqueDate, index + 1), `beforeend`);
+    const eventsListElement = document.querySelectorAll(`.trip-events__list`)[index];
 
-const eventsListElement = document.querySelector(`.trip-events__list`);
-
-points.slice(1)
-  .forEach((point) => render(eventsListElement, createPointTemplate(point), `beforeend`));
+    points
+      .filter((point) => getDate(point.startTime) === getDate(uniqueDate))
+      .forEach((point) => {
+        render(eventsListElement, createPointTemplate(point), `beforeend`);
+      });
+  });

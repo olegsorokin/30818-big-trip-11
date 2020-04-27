@@ -39,9 +39,9 @@ const offers = [
 ];
 
 const filters = [
-  `Everything`,
-  `Future`,
-  `Past`
+  `everything`,
+  `future`,
+  `past`
 ];
 
 export {cities, offers, activityTypes, transferTypes, filters};
