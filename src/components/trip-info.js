@@ -6,7 +6,7 @@ const createCitiesList = (points) => {
   }
 
   const lastPointIndex = points.length - 1;
-  return `${points[0].city} &mdash; ... &mdash; ${points[lastPointIndex].city}`
+  return `${points[0].city} &mdash; ... &mdash; ${points[lastPointIndex].city}`;
 };
 
 const createDatesList = (points) => {

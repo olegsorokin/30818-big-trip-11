@@ -1,5 +1,5 @@
 import {formatDate} from "../utils";
-import {cities, activityTypes, transferTypes, offers} from "../const";
+import {cities, activityTypes, transferTypes, offersList} from "../const";
 
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
@@ -18,16 +18,14 @@ const createOfferMarkup = (offer, isChecked) => {
 };
 
 const generateOffersMarkup = (pointOffers) => {
-  return offers
+  return offersList
     .map((offer) => createOfferMarkup(offer, pointOffers.some((pointOffer) => pointOffer.type === offer.type)))
     .join(`\n`);
 };
 
 const createDestinationOptionsMarkup = () => {
   return cities
-    .map((city) => {
-      `<option value="${city}"></option>`
-    })
+    .map((city) => `<option value="${city}"></option>`)
     .join(`\n`);
 };
 
@@ -57,7 +55,6 @@ export const createPointEditTemplate = (point) => {
 
   const destinationOptionsMarkup = createDestinationOptionsMarkup();
 
-  const isOffersShowing = !!offers;
   const getStartTime = () => formatDate(startTime);
   const getEndTime = () => formatDate(endTime);
   const transfersMarkup = generateTypesMarkup(transferTypes);

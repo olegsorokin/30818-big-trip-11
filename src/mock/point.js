@@ -1,5 +1,5 @@
 import {addRandomMinutes, getRandomArrayItem, getRandomIntegerNumber, getRandomTime} from "../utils";
-import {cities, offers, activityTypes, transferTypes} from "../const";
+import {cities, offersList, activityTypes, transferTypes} from "../const";
 
 const pointTypes = [...transferTypes, ...activityTypes];
 const descriptionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
@@ -24,11 +24,11 @@ const generatePictures = () => {
 
 const generateOffers = () => {
   const count = getRandomIntegerNumber(0, 5);
-  const offersList = new Array(count)
+  const offers = new Array(count)
     .fill(``)
-    .map(() => getRandomArrayItem(offers));
+    .map(() => getRandomArrayItem(offersList));
 
-  return [...new Set(offersList)];
+  return [...new Set(offers)];
 };
 
 const generatePoint = () => {

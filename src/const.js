@@ -10,7 +10,7 @@ const cities = [
   `Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`
 ];
 
-const offers = [
+const offersList = [
   {
     type: `luggage`,
     title: `Add luggage`,
@@ -44,4 +44,4 @@ const filters = [
   `past`
 ];
 
-export {cities, offers, activityTypes, transferTypes, filters};
+export {cities, offersList, activityTypes, transferTypes, filters};
