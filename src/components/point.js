@@ -1,4 +1,4 @@
-import {formatTime} from "../utils";
+import {createElement, formatTime} from "../utils";
 import {activityTypes} from "../const";
 
 const createOffersMarkup = (offers) => {
@@ -16,7 +16,7 @@ const createOffersMarkup = (offers) => {
     .join(`\n`);
 };
 
-export const createPointTemplate = (point) => {
+const createPointTemplate = (point) => {
   const {type, city, startTime, endTime, price, offers} = point;
 
   const isOffersShowing = !!offers;
@@ -65,3 +65,26 @@ export const createPointTemplate = (point) => {
     </li>`
   );
 };
+
+export default class Point {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
