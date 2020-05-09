@@ -20,12 +20,22 @@ const renderPoint = (pointListElement, point) => {
   };
   const replaceEditToPoint = () => {
     pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToPoint();
+    }
   };
 
   const pointComponent = new PointComponent(point);
   const editButton = pointComponent.getElement().querySelector(`.event__rollup-btn`);
   editButton.addEventListener(`click`, () => {
     replacePointToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const pointEditComponent = new PointEditComponent(point);
