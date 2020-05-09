@@ -1,6 +1,10 @@
 import {createElement} from "../utils";
 
 const createCitiesList = (points) => {
+  if (points.length === 0) {
+    return ``;
+  }
+
   if (points.length <= 3) {
     return points
       .map((point) => point.city)
@@ -12,6 +16,10 @@ const createCitiesList = (points) => {
 };
 
 const createDatesList = (points) => {
+  if (points.length === 0) {
+    return ``;
+  }
+
   const lastPointIndex = points.length - 1;
   const startDate = points[0].startTime;
   const endDate = points[lastPointIndex].startTime;
