@@ -6,6 +6,7 @@ import PointComponent from "./components/point";
 import SiteMenuComponent from "./components/site-menu";
 import SortComponent from "./components/sort";
 import TripInfoComponent from "./components/trip-info";
+import NoPointsComponent from "./components/no-points";
 import {generatePoints} from "./mock/point";
 import {filters} from "./const";
 import {getDate, render, RenderPosition} from "./utils";
@@ -53,22 +54,31 @@ const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 const siteMenuTitle = document.querySelector(`.trip-controls h2:first-child`);
 
+const renderBoard = () => {
+  if (points.length === 0) {
+    render(tripEventsElement, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
+  render(tripEventsElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new DaysListComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const daysListElement = document.querySelector(`.trip-days`);
+
+  [...uniqueDates]
+    .forEach((uniqueDate, index) => {
+      render(daysListElement, new DayComponent(uniqueDate, index + 1).getElement(), RenderPosition.BEFOREEND);
+      const eventsListElement = document.querySelectorAll(`.trip-events__list`)[index];
+
+      points
+        .filter((point) => getDate(point.startTime) === getDate(uniqueDate))
+        .forEach((point) => {
+          renderPoint(eventsListElement, point);
+        });
+    });
+};
+
 render(tripMainElement, new TripInfoComponent(points).getElement(), RenderPosition.AFTERBEGIN);
 render(siteMenuTitle, new SiteMenuComponent().getElement(), RenderPosition.AFTEREND);
 render(tripControlsElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
-render(tripEventsElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-render(tripEventsElement, new DaysListComponent().getElement(), RenderPosition.BEFOREEND);
-
-const daysListElement = document.querySelector(`.trip-days`);
-
-[...uniqueDates]
-  .forEach((uniqueDate, index) => {
-    render(daysListElement, new DayComponent(uniqueDate, index + 1).getElement(), RenderPosition.BEFOREEND);
-    const eventsListElement = document.querySelectorAll(`.trip-events__list`)[index];
-
-    points
-      .filter((point) => getDate(point.startTime) === getDate(uniqueDate))
-      .forEach((point) => {
-        renderPoint(eventsListElement, point);
-      });
-  });
+renderBoard();
