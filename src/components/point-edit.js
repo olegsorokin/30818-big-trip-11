@@ -1,4 +1,4 @@
-import {formatDate} from "../utils";
+import {createElement, formatDate} from "../utils";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
 
 const createOfferMarkup = (offer, isChecked) => {
@@ -50,7 +50,7 @@ const generatePicturesMarkup = (pictures) => {
     .join(`\n`);
 };
 
-export const createPointEditTemplate = (point) => {
+const createPointEditTemplate = (point) => {
   const {type, city, startTime, endTime, pictures, description, price, offers, isFavorite} = point;
 
   const destinationOptionsMarkup = createDestinationOptionsMarkup();
@@ -156,3 +156,26 @@ export const createPointEditTemplate = (point) => {
     </form>`
   );
 };
+
+export default class PointEdit {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointEditTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

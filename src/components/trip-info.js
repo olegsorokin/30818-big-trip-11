@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const createCitiesList = (points) => {
   if (points.length <= 3) {
     return points
@@ -29,7 +31,7 @@ const calculateTotalCost = (points) => {
   return points.reduce((acc, it) => acc + it.price, 0);
 };
 
-export const createTripInfoTemplate = (points) => {
+const createTripInfoTemplate = (points) => {
   const citiesList = createCitiesList(points);
   const datesList = createDatesList(points);
   const totalCost = calculateTotalCost(points);
@@ -48,3 +50,26 @@ export const createTripInfoTemplate = (points) => {
     </section>`
   );
 };
+
+export default class TripInfo {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

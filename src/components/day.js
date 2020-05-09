@@ -1,4 +1,6 @@
-export const createDayTemplate = (timeStamp, index) => {
+import {createElement} from "../utils";
+
+const createDayTemplate = (timeStamp, index) => {
   const month = new Date(timeStamp).toLocaleDateString(`en-US`, {month: `short`});
   const day = new Date(timeStamp).toLocaleDateString(`en-US`, {day: `numeric`});
 
@@ -13,3 +15,27 @@ export const createDayTemplate = (timeStamp, index) => {
     </li>`
   );
 };
+
+export default class Day {
+  constructor(time, index) {
+    this._time = time;
+    this._index = index;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDayTemplate(this._time, this._index);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
