@@ -1,5 +1,6 @@
-import {createElement, formatTime} from "../utils";
+import {formatTime} from "../utils/common";
 import {activityTypes} from "../const";
+import AbstractComponent from "./abstract-component";
 
 const createOffersMarkup = (offers) => {
   return offers.length === 0 ? `` : offers
@@ -66,25 +67,18 @@ const createPointTemplate = (point) => {
   );
 };
 
-export default class Point {
+export default class Point extends AbstractComponent {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setRollupButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }

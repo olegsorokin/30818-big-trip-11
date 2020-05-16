@@ -1,5 +1,6 @@
-import {createElement, formatDate} from "../utils";
+import {formatDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
+import AbstractComponent from "./abstract-component";
 
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
@@ -157,25 +158,17 @@ const createPointEditTemplate = (point) => {
   );
 };
 
-export default class PointEdit {
+export default class PointEdit extends AbstractComponent {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointEditTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
   }
 }
