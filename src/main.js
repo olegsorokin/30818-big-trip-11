@@ -9,7 +9,8 @@ import TripInfoComponent from "./components/trip-info";
 import NoPointsComponent from "./components/no-points";
 import {generatePoints} from "./mock/point";
 import {filters} from "./const";
-import {getDate, render, RenderPosition} from "./utils";
+import {getDate} from "./utils/common";
+import {render, RenderPosition, replace} from "./utils/render";
 
 const POINT_COUNT = 15;
 const points = generatePoints(POINT_COUNT);
@@ -17,10 +18,10 @@ const uniqueDates = new Set(points.map((point) => getDate(point.startTime)));
 
 const renderPoint = (pointListElement, point) => {
   const replacePointToEdit = () => {
-    pointListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
   const replaceEditToPoint = () => {
-    pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
@@ -33,20 +34,19 @@ const renderPoint = (pointListElement, point) => {
   };
 
   const pointComponent = new PointComponent(point);
-  const editButton = pointComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, () => {
-    replacePointToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
+  pointComponent.setRollupButtonClickHandler(() => {
+      replacePointToEdit();
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  );
 
   const pointEditComponent = new PointEditComponent(point);
-  const editForm = pointEditComponent.getElement();
-  editForm.addEventListener(`submit`, (evt) => {
+  pointEditComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceEditToPoint();
   });
 
-  render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -56,18 +56,18 @@ const siteMenuTitle = document.querySelector(`.trip-controls h2:first-child`);
 
 const renderBoard = () => {
   if (points.length === 0) {
-    render(tripEventsElement, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
+    render(tripEventsElement, new NoPointsComponent(), RenderPosition.BEFOREEND);
     return;
   }
 
-  render(tripEventsElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(tripEventsElement, new DaysListComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new SortComponent(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new DaysListComponent(), RenderPosition.BEFOREEND);
 
   const daysListElement = document.querySelector(`.trip-days`);
 
   [...uniqueDates]
     .forEach((uniqueDate, index) => {
-      render(daysListElement, new DayComponent(uniqueDate, index + 1).getElement(), RenderPosition.BEFOREEND);
+      render(daysListElement, new DayComponent(uniqueDate, index + 1), RenderPosition.BEFOREEND);
       const eventsListElement = document.querySelectorAll(`.trip-events__list`)[index];
 
       points
@@ -78,7 +78,7 @@ const renderBoard = () => {
     });
 };
 
-render(tripMainElement, new TripInfoComponent(points).getElement(), RenderPosition.AFTERBEGIN);
-render(siteMenuTitle, new SiteMenuComponent().getElement(), RenderPosition.AFTEREND);
-render(tripControlsElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
+render(tripMainElement, new TripInfoComponent(points), RenderPosition.AFTERBEGIN);
+render(siteMenuTitle, new SiteMenuComponent(), RenderPosition.AFTEREND);
+render(tripControlsElement, new FilterComponent(filters), RenderPosition.BEFOREEND);
 renderBoard();

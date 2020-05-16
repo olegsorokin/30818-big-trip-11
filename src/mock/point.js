@@ -1,4 +1,4 @@
-import {addRandomMinutes, getRandomArrayItem, getRandomIntegerNumber, getRandomTime} from "../utils";
+import {addRandomMinutes, getRandomArrayItem, getRandomIntegerNumber, getRandomTime} from "../utils/common";
 import {cities, offersList, activityTypes, transferTypes} from "../const";
 
 const pointTypes = [...transferTypes, ...activityTypes];

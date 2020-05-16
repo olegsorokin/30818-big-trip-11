@@ -1,4 +1,4 @@
-import {formatDate} from "../utils";
+import {formatDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
 import AbstractComponent from "./abstract-component";
 
@@ -166,5 +166,9 @@ export default class PointEdit extends AbstractComponent {
 
   getTemplate() {
     return createPointEditTemplate(this._point);
+  }
+
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
   }
 }

@@ -1,4 +1,4 @@
-import {formatTime} from "../utils";
+import {formatTime} from "../utils/common";
 import {activityTypes} from "../const";
 import AbstractComponent from "./abstract-component";
 
@@ -75,5 +75,10 @@ export default class Point extends AbstractComponent {
 
   getTemplate() {
     return createPointTemplate(this._point);
+  }
+
+  setRollupButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }
