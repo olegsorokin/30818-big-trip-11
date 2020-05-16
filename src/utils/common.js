@@ -30,7 +30,7 @@ export const formatTime = (time) => {
     minute: `2-digit`,
     hour12: false
   });
-}
+};
 
 export const getDate = (time) => {
   return new Date(time).setHours(0, 0, 0, 0);
@@ -44,4 +44,4 @@ export const formatDate = (time) => {
   });
 
   return `${formattedDate} ${formatTime(time)}`;
-}
+};
