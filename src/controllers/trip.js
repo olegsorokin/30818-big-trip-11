@@ -1,43 +1,10 @@
-import PointComponent from "../components/point";
-import PointEditComponent from "../components/point-edit";
 import NoPointsComponent from "../components/no-points";
 import SortComponent, {SortType} from "../components/sort";
 import DaysListComponent from "../components/days-list";
 import DayComponent from "../components/day";
+import PointController from "./point";
 import {getDate} from "../utils/common";
-import {render, RenderPosition, replace} from "../utils/render";
-
-const renderPoint = (container, point) => {
-  const replacePointToEdit = () => {
-    replace(pointEditComponent, pointComponent);
-  };
-  const replaceEditToPoint = () => {
-    replace(pointComponent, pointEditComponent);
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToPoint();
-    }
-  };
-
-  const pointComponent = new PointComponent(point);
-  pointComponent.setRollupButtonClickHandler(() => {
-    replacePointToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const pointEditComponent = new PointEditComponent(point);
-  pointEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToPoint();
-  });
-
-  render(container, pointComponent, RenderPosition.BEFOREEND);
-};
+import {render, RenderPosition} from "../utils/render";
 
 const renderDay = (container, points, date, index) => {
   const dayComponent = new DayComponent(date, index);
@@ -47,7 +14,7 @@ const renderDay = (container, points, date, index) => {
 
   points
     .forEach((point) => {
-      renderPoint(eventsListElement, point);
+      new PointController(eventsListElement).render(point);
     });
 };
 
