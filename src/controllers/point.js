@@ -2,10 +2,17 @@ import PointComponent from "../components/point";
 import PointEditComponent from "../components/point-edit";
 import {render, RenderPosition, replace} from "../utils/render";
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 export default class PointController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+    this._mode = Mode.DEFAULT;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -14,6 +21,9 @@ export default class PointController {
   }
 
   render(point) {
+    const oldPointComponent = this._pointComponent;
+    const oldPointEditComponent = this._pointEditComponent;
+
     this._pointComponent = new PointComponent(point);
     this._pointEditComponent = new PointEditComponent(point);
 
@@ -27,28 +37,43 @@ export default class PointController {
       this._replaceEditToPoint();
     });
 
-    this._pointEditComponent.setFavoriteChangeHandler((evt) => {
+    this._pointEditComponent.setFavoritesChangeHandler((evt) => {
       this._onDataChange(this, point, Object.assign({}, point, {
         isFavorite: evt.target.checked
-      }))
+      }));
     });
 
     this._pointEditComponent.setTypeChangeHandler((evt) => {
       this._onDataChange(this, point, Object.assign({}, point, {
         type: evt.target.value
-      }))
+      }));
     });
 
-    render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+    if (oldPointComponent && oldPointEditComponent) {
+      replace(this._pointComponent, oldPointComponent);
+      replace(this._pointEditComponent, oldPointEditComponent);
+    } else {
+      render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToPoint();
+    }
   }
 
   _replaceEditToPoint() {
-    replace(this._pointComponent, this._pointEditComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._pointEditComponent.rerender();
+    replace(this._pointComponent, this._pointEditComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _replacePointToEdit() {
+    this._onViewChange();
     replace(this._pointEditComponent, this._pointComponent);
+    this._mode = Mode.EDIT;
   }
 
   _onEscKeyDown(evt) {

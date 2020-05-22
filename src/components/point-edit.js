@@ -167,7 +167,7 @@ export default class PointEdit extends AbstractSmartComponent {
 
     this._point = point;
     this._submitHandler = null;
-    this._favoriteChangeHandler = null;
+    this._favoritesChangeHandler = null;
     this._typeChangeHandler = null;
 
     this._subscribeOnEvents();
@@ -179,13 +179,9 @@ export default class PointEdit extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    this.setFavoriteChangeHandler(this._favoriteChangeHandler);
+    this.setFavoritesChangeHandler(this._favoritesChangeHandler);
     this.setTypeChangeHandler(this._typeChangeHandler);
     this._subscribeOnEvents();
-  }
-
-  rerender() {
-    super.rerender();
   }
 
   setSubmitHandler(handler) {
@@ -194,10 +190,10 @@ export default class PointEdit extends AbstractSmartComponent {
     this._submitHandler = handler;
   }
 
-  setFavoriteChangeHandler(handler) {
+  setFavoritesChangeHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
 
-    this._favoriteChangeHandler = handler;
+    this._favoritesChangeHandler = handler;
   }
 
   setTypeChangeHandler(handler) {
