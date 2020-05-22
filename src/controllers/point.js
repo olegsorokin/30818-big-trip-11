@@ -3,8 +3,9 @@ import PointEditComponent from "../components/point-edit";
 import {render, RenderPosition, replace} from "../utils/render";
 
 export default class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -24,6 +25,12 @@ export default class PointController {
     this._pointEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._replaceEditToPoint();
+    });
+
+    this._pointEditComponent.setFavoriteChangeHandler((evt) => {
+      this._onDataChange(this, point, Object.assign({}, point, {
+        isFavorite: evt.target.checked
+      }))
     });
 
     render(this._container, this._pointComponent, RenderPosition.BEFOREEND);

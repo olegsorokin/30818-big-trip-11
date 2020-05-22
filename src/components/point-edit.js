@@ -171,4 +171,8 @@ export default class PointEdit extends AbstractComponent {
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
   }
+
+  setFavoriteChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, handler);
+  }
 }
