@@ -1,6 +1,9 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {formatDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
@@ -166,10 +169,13 @@ export default class PointEdit extends AbstractSmartComponent {
     super();
 
     this._point = point;
+    this._flatpickrStartDate = null;
+    this._flatpickrEndDate = null;
     this._submitHandler = null;
     this._favoritesChangeHandler = null;
     this._typeChangeHandler = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -200,6 +206,38 @@ export default class PointEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, handler);
 
     this._typeChangeHandler = handler;
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickrStartDate) {
+      this._flatpickrStartDate.destroy();
+      this._flatpickrStartDate = null;
+    }
+
+    if (this._flatpickrEndDate) {
+      this._flatpickrEndDate.destroy();
+      this._flatpickrEndDate = null;
+    }
+
+    const startDateElements = this.getElement().querySelector(`.event__input--time[name='event-start-time']`);
+    const endDateElements = this.getElement().querySelector(`.event__input--time[name='event-end-time']`);
+
+    const setOptions = (defaultDate = `today`) => ({
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/y H:i`,
+      minDate: this._point.startTime,
+      defaultDate
+    });
+
+    this._flatpickrStartDate = flatpickr(startDateElements, setOptions(this._point.startTime));
+    this._flatpickrEndDate = flatpickr(endDateElements, setOptions(this._point.endTime));
   }
 
   _subscribeOnEvents() {
