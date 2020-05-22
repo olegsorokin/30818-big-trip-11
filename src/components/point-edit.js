@@ -1,6 +1,6 @@
+import AbstractSmartComponent from "./abstract-smart-component";
 import {formatDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
-import AbstractComponent from "./abstract-component";
 
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
@@ -30,18 +30,20 @@ const createDestinationOptionsMarkup = () => {
     .join(`\n`);
 };
 
-const createTypeMarkup = (type, index) => {
+const createTypeMarkup = (type, index, currentType) => {
+  const isChecked = currentType === type ? `checked` : ``;
+
   return (
     `<div class="event__type-item">
-      <input id="event-type-${type}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+      <input id="event-type-${type}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${index}">${type}</label>
     </div>`
   );
 };
 
-const generateTypesMarkup = (types) => {
+const generateTypesMarkup = (types, currentType) => {
   return types
-    .map((it, index) => createTypeMarkup(it, index))
+    .map((it, index) => createTypeMarkup(it, index, currentType))
     .join(`\n`);
 };
 
@@ -58,13 +60,14 @@ const createPointEditTemplate = (point) => {
 
   const getStartTime = () => formatDate(startTime);
   const getEndTime = () => formatDate(endTime);
-  const transfersMarkup = generateTypesMarkup(transferTypes);
-  const activityMarkup = generateTypesMarkup(activityTypes);
+  const transfersMarkup = generateTypesMarkup(transferTypes, type);
+  const activityMarkup = generateTypesMarkup(activityTypes, type);
   const picturesMarkup = generatePicturesMarkup(pictures);
   const offersMarkup = generateOffersMarkup(offers);
   const getTitle = () => {
     return activityTypes.includes(type) ? `${type} in` : `${type} to`;
   };
+  const isBlockSaveButton = false;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -119,7 +122,7 @@ const createPointEditTemplate = (point) => {
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
 
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
@@ -158,21 +161,53 @@ const createPointEditTemplate = (point) => {
   );
 };
 
-export default class PointEdit extends AbstractComponent {
+export default class PointEdit extends AbstractSmartComponent {
   constructor(point) {
     super();
+
     this._point = point;
+    this._submitHandler = null;
+    this._favoriteChangeHandler = null;
+    this._typeChangeHandler = null;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createPointEditTemplate(this._point);
   }
 
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setFavoriteChangeHandler(this._favoriteChangeHandler);
+    this.setTypeChangeHandler(this._typeChangeHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   setFavoriteChangeHandler(handler) {
-    this.getElement().addEventListener(`change`, handler);
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
+
+    this._favoriteChangeHandler = handler;
+  }
+
+  setTypeChangeHandler(handler) {
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, handler);
+
+    this._typeChangeHandler = handler;
+  }
+
+  _subscribeOnEvents() {
+    // const element = this.getElement();
+    // this.rerender();
   }
 }

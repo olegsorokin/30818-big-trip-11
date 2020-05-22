@@ -33,6 +33,12 @@ export default class PointController {
       }))
     });
 
+    this._pointEditComponent.setTypeChangeHandler((evt) => {
+      this._onDataChange(this, point, Object.assign({}, point, {
+        type: evt.target.value
+      }))
+    });
+
     render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
   }
 
