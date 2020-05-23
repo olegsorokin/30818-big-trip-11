@@ -1,16 +1,14 @@
 import AbstractComponent from "./abstract-component";
+import {formatISO, formatShortDate} from "../utils/common";
 
 const createDayInfoMarkup = (timeStamp, index) => {
   if (timeStamp === undefined) {
     return ``;
   }
 
-  const month = new Date(timeStamp).toLocaleDateString(`en-US`, {month: `short`});
-  const day = new Date(timeStamp).toLocaleDateString(`en-US`, {day: `numeric`});
-
   return (
     `<span class="day__counter">${index}</span>
-    <time class="day__date" datetime="2019-03-18">${month} ${day}</time>`
+    <time class="day__date" datetime="${formatISO(timeStamp)}">${formatShortDate(timeStamp)}</time>`
   );
 };
 

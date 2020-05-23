@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
@@ -25,23 +27,38 @@ export const addRandomMinutes = (time) => {
 };
 
 export const formatTime = (time) => {
-  return time.toLocaleTimeString(`en-US`, {
-    hour: `2-digit`,
-    minute: `2-digit`,
-    hour12: false
-  });
-};
-
-export const getDate = (time) => {
-  return new Date(time).setHours(0, 0, 0, 0);
+  return moment(time).format(`HH:mm`);
 };
 
 export const formatDate = (time) => {
-  const formattedDate = time.toLocaleDateString(`en-US`, {
-    year: `2-digit`,
-    month: `2-digit`,
-    day: `2-digit`
-  });
+  return moment(time).format(`DD/MM/YY HH:mm`);
+};
 
-  return `${formattedDate} ${formatTime(time)}`;
+export const formatShortDate = (time) => {
+  return moment(time).format(`MMM DD`);
+};
+
+export const formatDiff = (start, end) => {
+  const diff = moment(end).diff(moment(start));
+  const minutes = moment.duration(diff).minutes();
+  const hours = moment.duration(diff).hours();
+  const days = moment.duration(diff).days();
+
+  if (days === 0) {
+    if (hours === 0) {
+      return moment(`${minutes}`, `m`).format(`mm[M]`);
+    }
+
+    return moment(`${hours} ${minutes}`, `H m`).format(`HH[H] mm[M]`);
+  }
+
+  return moment(`${days} ${hours} ${minutes}`, `D H m`).format(`DD[D] HH[H] mm[M]`);
+};
+
+export const formatISO = (time) => {
+  return moment(time).toISOString();
+};
+
+export const getDayTimeStamp = (time) => {
+  return moment(time).startOf(`day`).valueOf();
 };

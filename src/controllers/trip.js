@@ -3,7 +3,7 @@ import SortComponent, {SortType} from "../components/sort";
 import DaysListComponent from "../components/days-list";
 import DayComponent from "../components/day";
 import PointController from "./point";
-import {getDate} from "../utils/common";
+import {getDayTimeStamp} from "../utils/common";
 import {render, RenderPosition} from "../utils/render";
 
 const renderDay = (container, points, onDataChange, onViewChange, date, index) => {
@@ -26,11 +26,11 @@ const renderDays = (container, points, sortType, onDataChange, onViewChange) => 
 
   switch (sortType) {
     case SortType.EVENT:
-      const uniqueDates = new Set(points.map((point) => getDate(point.startTime)));
+      const uniqueDates = new Set(points.map((point) => getDayTimeStamp(point.startTime)));
 
       [...uniqueDates]
         .forEach((uniqueDate, index) => {
-          const filteredPoints = points.filter((point) => getDate(point.startTime) === getDate(uniqueDate));
+          const filteredPoints = points.filter((point) => getDayTimeStamp(point.startTime) === getDayTimeStamp(uniqueDate));
           showedPointControllers = showedPointControllers.concat(renderDay(container, filteredPoints, onDataChange, onViewChange, uniqueDate, index + 1));
         });
       break;

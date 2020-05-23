@@ -1,4 +1,4 @@
-import {formatTime} from "../utils/common";
+import {formatDiff, formatISO, formatTime} from "../utils/common";
 import {activityTypes} from "../const";
 import AbstractComponent from "./abstract-component";
 
@@ -24,7 +24,7 @@ const createPointTemplate = (point) => {
   const offersMarkup = createOffersMarkup(offers);
   const getStartTime = () => formatTime(startTime);
   const getEndTime = () => formatTime(endTime);
-  const duration = `30M`;
+  const duration = formatDiff(startTime, endTime);
   const getTitle = () => {
     return activityTypes.includes(type) ? `${type} in ${city}` : `${type} to ${city}`;
   };
@@ -39,9 +39,9 @@ const createPointTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${getStartTime()}</time>
+            <time class="event__start-time" datetime="${formatISO(startTime)}">${getStartTime()}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${getEndTime()}</time>
+            <time class="event__end-time" datetime="${formatISO(endTime)}">${getEndTime()}</time>
           </p>
           <p class="event__duration">${duration}</p>
         </div>
