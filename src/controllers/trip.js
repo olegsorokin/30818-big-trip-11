@@ -133,8 +133,9 @@ export default class TripController {
   _onSortTypeChange(sortType) {
     const sortedPoints = getSortedPoints(this._pointsModel.getPoints(), sortType);
 
-    this._daysListComponent.getElement().innerHTML = ``;
-    renderDays(this._daysListComponent.getElement(), sortedPoints, sortType, this._onDataChange, this._onViewChange);
+    this._removePoints();
+    this._removeDays();
+    this._renderPoints(sortedPoints);
   }
 
   _onFilterChange() {
