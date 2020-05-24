@@ -35,6 +35,7 @@ const generatePoint = () => {
   const startTime = getRandomTime();
 
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomArrayItem(pointTypes),
     city: getRandomArrayItem(cities),
     startTime,
