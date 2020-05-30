@@ -38,10 +38,10 @@ const offersList = [
   }
 ];
 
-const filters = [
-  `everything`,
-  `future`,
-  `past`
-];
+export const FilterType = {
+  ALL: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
 
-export {cities, offersList, activityTypes, transferTypes, filters};
+export {cities, offersList, activityTypes, transferTypes};

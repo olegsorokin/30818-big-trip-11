@@ -1,9 +1,28 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {formatDate} from "../utils/common";
+import {formatDate, parseDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
+
+const isAllowableCity = (city) => {
+  return cities.includes(city);
+};
+
+const parseFormData = (formData) => {
+  const offers = offersList.filter((offer) => formData.get(`event-offer-${offer.type}`));
+  const startTime = formData.get(`event-start-time`);
+  const endTime = formData.get(`event-end-time`);
+
+  return {
+    startTime: startTime ? parseDate(startTime) : null,
+    endTime: endTime ? parseDate(endTime) : null,
+    type: formData.get(`event-type`),
+    city: formData.get(`event-destination`),
+    price: formData.get(`event-price`),
+    offers
+  };
+};
 
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
@@ -51,13 +70,18 @@ const generateTypesMarkup = (types, currentType) => {
 };
 
 const generatePicturesMarkup = (pictures) => {
+  if (!pictures) {
+    return ``;
+  }
+
   return pictures
     .map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`)
     .join(`\n`);
 };
 
-const createPointEditTemplate = (point) => {
-  const {type, city, startTime, endTime, pictures, description, price, offers, isFavorite} = point;
+const createPointEditTemplate = (point, options) => {
+  const {type, startTime, endTime, pictures, description, offers, isFavorite} = point;
+  const {currentCity: city, currentPrice: price} = options;
 
   const destinationOptionsMarkup = createDestinationOptionsMarkup();
 
@@ -126,7 +150,7 @@ const createPointEditTemplate = (point) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">Delete</button>
 
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
@@ -169,31 +193,66 @@ export default class PointEdit extends AbstractSmartComponent {
     super();
 
     this._point = point;
+    this._currentCity = point.city;
+    this._currentPrice = point.price;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
     this._favoritesChangeHandler = null;
     this._typeChangeHandler = null;
+    this._deleteButtonClickHandler = null;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._point);
+    return createPointEditTemplate(this._point, {
+      currentCity: this._currentCity,
+      currentPrice: this._currentPrice
+    });
+  }
+
+  removeElement() {
+    if (this._flatpickrStartDate) {
+      this._flatpickrStartDate.destroy();
+      this._flatpickrStartDate = null;
+    }
+
+    if (this._flatpickrEndDate) {
+      this._flatpickrEndDate.destroy();
+      this._flatpickrEndDate = null;
+    }
+
+    super.removeElement();
   }
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setFavoritesChangeHandler(this._favoritesChangeHandler);
     this.setTypeChangeHandler(this._typeChangeHandler);
     this._subscribeOnEvents();
+  }
+
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
   }
 
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
   }
 
   setFavoritesChangeHandler(handler) {
@@ -212,6 +271,15 @@ export default class PointEdit extends AbstractSmartComponent {
     super.rerender();
 
     this._applyFlatpickr();
+  }
+
+  reset() {
+    const point = this._point;
+
+    this._currentCity = point.city;
+    this._currentPrice = point.price;
+
+    this.rerender();
   }
 
   _applyFlatpickr() {
@@ -241,7 +309,22 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    // const element = this.getElement();
-    // this.rerender();
+    const element = this.getElement();
+
+    element.querySelector(`.event__input--destination`)
+      .addEventListener(`input`, (evt) => {
+        this._currentCity = evt.target.value;
+
+        const saveButton = this.getElement().querySelector(`.event__save-btn`);
+        saveButton.disabled = !isAllowableCity(this._currentCity);
+      });
+
+    element.querySelector(`.event__input--price`)
+      .addEventListener(`input`, (evt) => {
+        this._currentPrice = evt.target.value;
+
+        const saveButton = this.getElement().querySelector(`.event__save-btn`);
+        saveButton.disabled = isNaN(this._currentPrice);
+      });
   }
 }

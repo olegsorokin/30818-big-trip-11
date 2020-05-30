@@ -62,3 +62,15 @@ export const formatISO = (time) => {
 export const getDayTimeStamp = (time) => {
   return moment(time).startOf(`day`).valueOf();
 };
+
+export const isFuture = (date) => {
+  return moment().isAfter(date);
+};
+
+export const isPast = (date) => {
+  return moment().isBefore(date);
+};
+
+export const parseDate = (date) => {
+  return moment(date, `DD/MM/YY hh:mm`).toDate();
+};
