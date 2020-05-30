@@ -17,7 +17,7 @@ export const EmptyPoint = {
   price: 0,
   offers: [],
   pictures: [],
-  description: '',
+  description: ``,
   isFavorite: false
 };
 
@@ -50,8 +50,9 @@ export default class PointController {
     this._pointEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const data = this._pointEditComponent.getData();
-      this._onDataChange(this, point, data);
+      this._onDataChange(this, point, Object.assign({}, point, data));
     });
+
     this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
 
     this._pointEditComponent.setFavoritesChangeHandler((evt) => {
@@ -100,8 +101,8 @@ export default class PointController {
   }
 
   _replaceEditToPoint() {
-    // document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._pointEditComponent.rerender();
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._pointEditComponent.reset();
 
     if (document.contains(this._pointEditComponent.getElement())) {
       replace(this._pointComponent, this._pointEditComponent);

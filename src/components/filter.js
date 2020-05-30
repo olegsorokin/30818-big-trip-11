@@ -7,7 +7,7 @@ const getFilterNameById = (id) => {
 };
 
 const createFilterMarkup = (filter, isChecked) => {
-  const { name } = filter;
+  const {name} = filter;
   const checked = isChecked ? `checked` : ``;
 
   return (

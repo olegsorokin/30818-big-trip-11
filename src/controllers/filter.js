@@ -23,7 +23,7 @@ export default class FilterController {
       return {
         name: filterType,
         checked: filterType === this._activeFilterType
-      }
+      };
     });
 
     this._filterComponent = new FilterComponent(filters);

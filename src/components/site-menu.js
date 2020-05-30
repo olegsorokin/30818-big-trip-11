@@ -32,7 +32,7 @@ export default class SiteMenu extends AbstractComponent {
     const item = Array.from(items).find((it) => it.dataset.menuItem === menuItem);
     Array.from(items).forEach((it) => {
       it.classList.remove(ACTIVE_CLASS);
-    })
+    });
 
     if (item) {
       item.classList.add(ACTIVE_CLASS);

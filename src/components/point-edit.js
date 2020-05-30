@@ -1,18 +1,26 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {formatDate} from "../utils/common";
+import {formatDate, parseDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
 import flatpickr from "flatpickr";
-import {encode} from "he";
 
 import "flatpickr/dist/flatpickr.min.css";
 
+const isAllowableCity = (city) => {
+  return cities.includes(city);
+};
+
 const parseFormData = (formData) => {
+  const offers = offersList.filter((offer) => formData.get(`event-offer-${offer.type}`));
+  const startTime = formData.get(`event-start-time`);
+  const endTime = formData.get(`event-end-time`);
+
   return {
-    startTime: formData.get(`event-start-time`),
-    endTime: formData.get(`event-end-time`),
+    startTime: startTime ? parseDate(startTime) : null,
+    endTime: endTime ? parseDate(endTime) : null,
     type: formData.get(`event-type`),
     city: formData.get(`event-destination`),
-    price: formData.get(`event-price`)
+    price: formData.get(`event-price`),
+    offers
   };
 };
 
@@ -71,10 +79,9 @@ const generatePicturesMarkup = (pictures) => {
     .join(`\n`);
 };
 
-const createPointEditTemplate = (point) => {
-  const {type, currentCity, startTime, endTime, pictures, description, currentPrice, offers, isFavorite} = point;
-  const price = encode(currentPrice);
-  const city = encode(currentCity);
+const createPointEditTemplate = (point, options) => {
+  const {type, startTime, endTime, pictures, description, offers, isFavorite} = point;
+  const {currentCity: city, currentPrice: price} = options;
 
   const destinationOptionsMarkup = createDestinationOptionsMarkup();
 
@@ -186,6 +193,8 @@ export default class PointEdit extends AbstractSmartComponent {
     super();
 
     this._point = point;
+    this._currentCity = point.city;
+    this._currentPrice = point.price;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
@@ -198,7 +207,10 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._point);
+    return createPointEditTemplate(this._point, {
+      currentCity: this._currentCity,
+      currentPrice: this._currentPrice
+    });
   }
 
   removeElement() {
@@ -261,6 +273,15 @@ export default class PointEdit extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
+  reset() {
+    const point = this._point;
+
+    this._currentCity = point.city;
+    this._currentPrice = point.price;
+
+    this.rerender();
+  }
+
   _applyFlatpickr() {
     if (this._flatpickrStartDate) {
       this._flatpickrStartDate.destroy();
@@ -288,7 +309,22 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    // const element = this.getElement();
-    // this.rerender();
+    const element = this.getElement();
+
+    element.querySelector(`.event__input--destination`)
+      .addEventListener(`input`, (evt) => {
+        this._currentCity = evt.target.value;
+
+        const saveButton = this.getElement().querySelector(`.event__save-btn`);
+        saveButton.disabled = !isAllowableCity(this._currentCity);
+      });
+
+    element.querySelector(`.event__input--price`)
+      .addEventListener(`input`, (evt) => {
+        this._currentPrice = evt.target.value;
+
+        const saveButton = this.getElement().querySelector(`.event__save-btn`);
+        saveButton.disabled = isNaN(this._currentPrice);
+      });
   }
 }

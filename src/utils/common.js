@@ -70,3 +70,7 @@ export const isFuture = (date) => {
 export const isPast = (date) => {
   return moment().isBefore(date);
 };
+
+export const parseDate = (date) => {
+  return moment(date, `DD/MM/YY hh:mm`).toDate();
+};

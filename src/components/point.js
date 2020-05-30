@@ -1,7 +1,6 @@
 import {formatDiff, formatISO, formatTime} from "../utils/common";
 import {activityTypes} from "../const";
 import AbstractComponent from "./abstract-component";
-import {encode} from "he";
 
 const createOffersMarkup = (offers) => {
   return offers.length === 0 ? `` : offers
@@ -19,9 +18,7 @@ const createOffersMarkup = (offers) => {
 };
 
 const createPointTemplate = (point) => {
-  const {type, city: notSanitizedCity, startTime, endTime, price: notSanitizedPrice, offers} = point;
-  const city = encode(notSanitizedCity);
-  const price = encode(notSanitizedPrice);
+  const {type, city, startTime, endTime, price, offers} = point;
 
   const isOffersShowing = !!offers;
   const offersMarkup = createOffersMarkup(offers);
