@@ -90,11 +90,11 @@ export default class TripController {
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
-  hide() {
+  show() {
     this._container.classList.remove(HIDDEN_CLASS);
   }
 
-  show() {
+  hide() {
     this._container.classList.add(HIDDEN_CLASS);
   }
 

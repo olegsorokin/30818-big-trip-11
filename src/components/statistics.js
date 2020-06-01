@@ -32,7 +32,7 @@ const createChartData = (valueCallback) => {
       return {
         label: type.toUpperCase(),
         value: valueCallback(type)
-      }
+      };
     })
     .filter((it) => it.value > 0)
     .sort((a, b) => b.value - a.value);
@@ -46,17 +46,17 @@ const getOptions = (title, formatter) => {
           size: 13
         },
         color: `#000000`,
-          anchor: 'end',
-          align: 'start',
-          formatter
+        anchor: `end`,
+        align: `start`,
+        formatter
       }
     },
     title: {
       display: true,
-        text: title,
-        fontColor: `#000000`,
-        fontSize: 23,
-        position: `left`
+      text: title,
+      fontColor: `#000000`,
+      fontSize: 23,
+      position: `left`
     },
     scales: {
       yAxes: [{
@@ -69,9 +69,8 @@ const getOptions = (title, formatter) => {
           display: false,
           drawBorder: false
         },
-        barThickness: 44,
       }],
-        xAxes: [{
+      xAxes: [{
         ticks: {
           display: false,
           beginAtZero: true,
@@ -79,8 +78,7 @@ const getOptions = (title, formatter) => {
         gridLines: {
           display: false,
           drawBorder: false
-        },
-        minBarLength: 50
+        }
       }],
     },
     legend: {
@@ -89,13 +87,13 @@ const getOptions = (title, formatter) => {
     tooltips: {
       enabled: false,
     }
-  }
+  };
 };
 
 const renderMoneyChart = (moneyCtx, points) => {
   const moneyChartData = createChartData((type) => {
     return points.reduce((acc, point) => point.type === type ? acc + point.price : acc, 0);
-  })
+  });
 
   moneyCtx.height = BAR_HEIGHT * moneyChartData.length;
 
@@ -108,17 +106,19 @@ const renderMoneyChart = (moneyCtx, points) => {
         data: moneyChartData.map((it) => it.value),
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50
       }]
     },
     options: getOptions(`MONEY`, (val) => `$ ${val}`)
   });
-}
+};
 
 const renderTransportChart = (transportCtx, points) => {
   const transportChartData = createChartData((type) => {
     return points.reduce((acc, point) => point.type === type ? ++acc : acc, 0);
-  })
+  });
 
   transportCtx.height = BAR_HEIGHT * transportChartData.length;
 
@@ -131,12 +131,14 @@ const renderTransportChart = (transportCtx, points) => {
         data: transportChartData.map((it) => it.value),
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50
       }]
     },
     options: getOptions(`TRANSPORT`, (val) => `${val}x`)
   });
-}
+};
 
 const renderTimeChart = (transportCtx, points) => {
   const calculateDuration = (type) => {
@@ -149,7 +151,7 @@ const renderTimeChart = (transportCtx, points) => {
 
   const timeChartData = createChartData((type) => {
     return calculateDuration(type);
-  })
+  });
 
   transportCtx.height = BAR_HEIGHT * timeChartData.length;
 
@@ -162,12 +164,14 @@ const renderTimeChart = (transportCtx, points) => {
         data: timeChartData.map((it) => it.value),
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 44,
+        minBarLength: 50
       }]
     },
     options: getOptions(`TIME SPENT`, (val) => `${val}H`)
   });
-}
+};
 
 export default class Statistics extends AbstractSmartComponent {
   constructor(points) {
