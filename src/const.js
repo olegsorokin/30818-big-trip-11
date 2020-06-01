@@ -1,16 +1,18 @@
-const transferTypes = [
+export const transferTypes = [
   `taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`
 ];
 
-const activityTypes = [
+export const activityTypes = [
   `check-in`, `sightseeing`, `restaurant`
 ];
 
-const cities = [
+export const allTypes = [...transferTypes, ...activityTypes];
+
+export const cities = [
   `Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`
 ];
 
-const offersList = [
+export const offersList = [
   {
     type: `luggage`,
     title: `Add luggage`,
@@ -44,4 +46,4 @@ export const FilterType = {
   PAST: `past`
 };
 
-export {cities, offersList, activityTypes, transferTypes};
+export const HIDDEN_CLASS = `visually-hidden`;

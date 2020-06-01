@@ -55,6 +55,14 @@ export const formatDiff = (start, end) => {
   return moment(`${days} ${hours} ${minutes}`, `D H m`).format(`DD[D] HH[H] mm[M]`);
 };
 
+export const getDuration = (start, end) => {
+  const startTime = moment(start);
+  const endTime = moment(end);
+  const duration = moment.duration(endTime.diff(startTime));
+
+  return duration.asDays();
+};
+
 export const formatISO = (time) => {
   return moment(time).toISOString();
 };

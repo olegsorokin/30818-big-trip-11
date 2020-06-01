@@ -1,6 +1,7 @@
 import FilterController from "./controllers/filter";
 import PointsModel from "./models/points";
 import SiteMenuComponent, {MenuItem} from "./components/site-menu";
+import StatisticsComponent from "./components/statistics";
 import TripInfoComponent from "./components/trip-info";
 import TripController from "./controllers/trip";
 import {generatePoints} from "./mock/point";
@@ -28,16 +29,26 @@ filterController.render();
 const tripController = new TripController(tripEventsElement, pointsModel);
 tripController.render(points);
 
+const statisticsComponent = new StatisticsComponent(points);
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
+statisticsComponent.hide();
+
 siteMenuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
-    case MenuItem.NEW_POINT:
-      siteMenuComponent.setActiveItem(MenuItem.TABLE);
-      tripController.createPoint();
+    case MenuItem.TABLE:
+      statisticsComponent.hide();
+      tripController.show();
+      break;
+    case MenuItem.STATS:
+      tripController.hide();
+      statisticsComponent.show();
       break;
   }
 });
 
 addEventButton.addEventListener(`click`, () => {
   siteMenuComponent.setActiveItem(MenuItem.NEW_POINT);
+  statisticsComponent.hide();
+  tripController.show();
   tripController.createPoint();
 })
