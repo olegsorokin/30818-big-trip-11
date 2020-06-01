@@ -3,9 +3,9 @@ import AbstractComponent from "./abstract-component";
 const ACTIVE_CLASS = `trip-tabs__btn--active`;
 
 export const MenuItem = {
-  NEW_POINT: `control__new-task`,
-  STATS: `Stats`,
-  TABLE: `Table`,
+  NEW_POINT: `new`,
+  TABLE: `table`,
+  STATS: `stats`,
 };
 
 const createSiteMenuTemplate = () => {

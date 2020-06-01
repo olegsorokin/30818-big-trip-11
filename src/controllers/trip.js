@@ -5,6 +5,7 @@ import DayComponent from "../components/day";
 import PointController, {Mode as PointControllerMode, EmptyPoint} from "./point";
 import {getDayTimeStamp} from "../utils/common";
 import {render, RenderPosition} from "../utils/render";
+import {HIDDEN_CLASS} from "../const";
 
 const renderDay = (container, points, onDataChange, onViewChange, date, index) => {
   const dayComponent = new DayComponent(date, index);
@@ -87,6 +88,14 @@ export default class TripController {
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
+  }
+
+  hide() {
+    this._container.classList.remove(HIDDEN_CLASS);
+  }
+
+  show() {
+    this._container.classList.add(HIDDEN_CLASS);
   }
 
   render() {
