@@ -61,8 +61,8 @@ const generatePicturesMarkup = (pictures) => {
 };
 
 const createPointEditTemplate = (point, options) => {
-  const {type, startTime, endTime, pictures, description, offers, isFavorite} = point;
-  const {currentCity: city, currentPrice: price, destinationsList, offersList} = options;
+  const {type, startTime, endTime, pictures, offers, isFavorite} = point;
+  const {currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
 
   const citiesList = destinationsList.map((it) => it.name);
   const offersListByType = offersList.find((it) => it.type === type).offers;
@@ -106,7 +106,7 @@ const createPointEditTemplate = (point, options) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${getTitle()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${destinationOptionsMarkup}
           </datalist>
@@ -129,7 +129,7 @@ const createPointEditTemplate = (point, options) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>Save</button>
@@ -158,7 +158,7 @@ const createPointEditTemplate = (point, options) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          <p class="event__destination-description">${currentDescription}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
@@ -180,6 +180,7 @@ export default class PointEdit extends AbstractSmartComponent {
     this._offersList = offers;
     this._currentCity = point.city;
     this._currentPrice = point.price;
+    this._currentDescription = point.description;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
@@ -195,6 +196,8 @@ export default class PointEdit extends AbstractSmartComponent {
     return createPointEditTemplate(this._point, {
       currentCity: this._currentCity,
       currentPrice: this._currentPrice,
+      currentDescription: this._currentDescription,
+
       destinationsList: this._destinationsList,
       offersList : this._offersList
     });
@@ -263,6 +266,7 @@ export default class PointEdit extends AbstractSmartComponent {
 
     this._currentCity = point.city;
     this._currentPrice = point.price;
+    this._currentDescription = point.description;
 
     this.rerender();
   }
@@ -298,10 +302,17 @@ export default class PointEdit extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--destination`)
       .addEventListener(`input`, (evt) => {
+        const element = this.getElement();
         this._currentCity = evt.target.value;
+        const destinationIndex = this._destinationsList.findIndex((it) => it.name === this._currentCity);
 
-        const saveButton = this.getElement().querySelector(`.event__save-btn`);
-        saveButton.disabled = !this._destinationsList.map((it) => it.name).includes(this._currentCity);
+        if (destinationIndex !== -1) {
+          this._currentDescription = this._destinationsList[destinationIndex].description;
+          element.querySelector(`.event__destination-description`).innerText = this._currentDescription;
+        }
+
+        const saveButton = element.querySelector(`.event__save-btn`);
+        saveButton.disabled = this._isDisabled();
       });
 
     element.querySelector(`.event__input--price`)
@@ -309,7 +320,16 @@ export default class PointEdit extends AbstractSmartComponent {
         this._currentPrice = evt.target.value;
 
         const saveButton = this.getElement().querySelector(`.event__save-btn`);
-        saveButton.disabled = isNaN(this._currentPrice);
+        saveButton.disabled = this._isDisabled();
       });
+  }
+
+  _isDisabled() {
+    const cities = this._destinationsList.map((it) => it.name);
+
+    const hasCity = cities.includes(this._currentCity);
+    const isValidPrice = this._currentPrice !== '' && !isNaN(this._currentPrice);
+
+    return !(hasCity && isValidPrice);
   }
 }
