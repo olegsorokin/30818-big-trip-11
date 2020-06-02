@@ -27,6 +27,17 @@ const API = class {
       .then(Point.parsePoints);
   }
 
+  createPoint(point) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.POST,
+      body: JSON.stringify(point.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Point.parsePoint);
+  }
+
   updatePoint(id, data) {
     return this._load({
       url: `points/${id}`,
@@ -34,21 +45,22 @@ const API = class {
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(checkStatus)
       .then((response) => response.json())
       .then(Point.parsePoint);
   }
 
   getDestinations() {
     return this._load({url: `destinations`})
-      .then(checkStatus)
       .then((response) => response.json());
   }
 
   getOffers() {
     return this._load({url: `offers`})
-      .then(checkStatus)
       .then((response) => response.json());
+  }
+
+  deletePoint(id) {
+    return this._load({url: `points/${id}`, method: Method.DELETE});
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
