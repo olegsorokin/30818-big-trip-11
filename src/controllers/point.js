@@ -5,6 +5,8 @@ import {render, remove, RenderPosition, replace} from "../utils/render";
 import {transferTypes} from "../const";
 import {parseDate} from "../utils/common";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
@@ -83,10 +85,20 @@ export default class PointController {
       const formData = this._pointEditComponent.getData();
       const data = parseFormData(formData, this._destinations, this._offers);
 
+      this._pointEditComponent.setData({
+        saveButtonText: `Saving...`,
+      });
+
       this._onDataChange(this, point, data);
     });
 
-    this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
+    this._pointEditComponent.setDeleteButtonClickHandler(() => {
+      this._pointEditComponent.setData({
+        deleteButtonText: `Deleting...`,
+      });
+
+      this._onDataChange(this, point, null);
+    });
 
     this._pointEditComponent.setFavoritesChangeHandler((evt) => {
       const newPoint = PointModel.clone(point);
@@ -126,6 +138,21 @@ export default class PointController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToPoint();
     }
+  }
+
+  shake() {
+    this._pointEditComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._pointComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._pointEditComponent.getElement().style.animation = ``;
+      this._pointComponent.getElement().style.animation = ``;
+
+      this._pointEditComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _replaceEditToPoint() {

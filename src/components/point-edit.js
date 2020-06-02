@@ -5,6 +5,11 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
+
 const createOfferMarkup = (offer, index, isChecked) => {
   const {title, price} = offer;
   const checked = isChecked ? `checked` : ``;
@@ -62,7 +67,8 @@ const generatePicturesMarkup = (pictures) => {
 
 const createPointEditTemplate = (point, options) => {
   const {startTime, endTime, offers, isFavorite} = point;
-  const {currentType: type, currentPictures, currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
+  const {currentType, currentPictures, currentCity, currentPrice, currentDescription, destinationsList, offersList, externalData} = options;
+  const type = currentType;
 
   const citiesList = destinationsList.map((it) => it.name);
   const offersListByType = offersList.find((it) => it.type === type).offers;
@@ -78,6 +84,9 @@ const createPointEditTemplate = (point, options) => {
     return activityTypes.includes(type) ? `${typesMap[type]} in` : `${typesMap[type]} to`;
   };
   const isBlockSaveButton = false;
+
+  const deleteButtonText = externalData.deleteButtonText;
+  const saveButtonText = externalData.saveButtonText;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -132,8 +141,8 @@ const createPointEditTemplate = (point, options) => {
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>${saveButtonText}</button>
+        <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
 
         <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-1">
@@ -183,6 +192,7 @@ export default class PointEdit extends AbstractSmartComponent {
     this._currentDescription = point.description;
     this._currentType = point.type;
     this._currentPictures = point.pictures;
+    this._externalData = DefaultData;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
@@ -200,7 +210,7 @@ export default class PointEdit extends AbstractSmartComponent {
       currentDescription: this._currentDescription,
       currentType: this._currentType,
       currentPictures: this._currentPictures,
-
+      externalData: this._externalData,
       destinationsList: this._destinationsList,
       offersList: this._offersList
     });
@@ -230,6 +240,11 @@ export default class PointEdit extends AbstractSmartComponent {
   getData() {
     const form = this.getElement();
     return new FormData(form);
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
   }
 
   setSubmitHandler(handler) {
