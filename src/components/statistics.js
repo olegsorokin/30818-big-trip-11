@@ -174,10 +174,10 @@ const renderTimeChart = (transportCtx, points) => {
 };
 
 export default class Statistics extends AbstractSmartComponent {
-  constructor(points) {
+  constructor(pointsModel) {
     super();
 
-    this._points = points;
+    this._points = pointsModel;
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;

@@ -2,6 +2,22 @@ import AbstractComponent from "./abstract-component";
 
 const ACTIVE_CLASS = `trip-tabs__btn--active`;
 
+const toggleMenu = (container, currentPage) => {
+  const buttons = container.getElement()
+    .querySelectorAll(`.trip-tabs__btn`);
+
+  Array.from(buttons)
+    .forEach((btn) => {
+      if (btn.dataset.menuItem === currentPage) {
+        btn.classList.add(ACTIVE_CLASS);
+      } else {
+        btn.classList.remove(ACTIVE_CLASS);
+      }
+    });
+
+  return currentPage;
+};
+
 export const MenuItem = {
   NEW_POINT: `new`,
   TABLE: `table`,
@@ -20,7 +36,8 @@ const createSiteMenuTemplate = () => {
 export default class SiteMenu extends AbstractComponent {
   constructor() {
     super();
-    this._currentPage = MenuItem.TABLE;
+
+    this._currentPage = toggleMenu(this, MenuItem.TABLE);
   }
 
   getTemplate() {
@@ -28,19 +45,7 @@ export default class SiteMenu extends AbstractComponent {
   }
 
   setActiveItem(menuItem) {
-    const items = this.getElement().querySelectorAll(`.trip-tabs__btn`);
-    const item = Array.from(items).find((it) => it.dataset.menuItem === menuItem);
-    Array.from(items).forEach((it) => {
-      it.classList.remove(ACTIVE_CLASS);
-    });
-
-    if (item) {
-      item.classList.add(ACTIVE_CLASS);
-    } else {
-      items[0].classList.add(ACTIVE_CLASS);
-    }
-
-    this._currentPage = menuItem;
+    this._currentPage = toggleMenu(this, menuItem);
   }
 
   setOnChange(handler) {
@@ -53,11 +58,7 @@ export default class SiteMenu extends AbstractComponent {
 
       const menuItem = evt.target.dataset.menuItem;
 
-      if (this._currentPage === menuItem) {
-        return;
-      }
-
-      this._currentPage = menuItem;
+      this._currentPage = toggleMenu(this, menuItem);
 
       handler(menuItem);
     });
