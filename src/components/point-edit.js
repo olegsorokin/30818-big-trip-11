@@ -202,7 +202,7 @@ export default class PointEdit extends AbstractSmartComponent {
       currentPictures: this._currentPictures,
 
       destinationsList: this._destinationsList,
-      offersList : this._offersList
+      offersList: this._offersList
     });
   }
 
@@ -300,7 +300,6 @@ export default class PointEdit extends AbstractSmartComponent {
 
     element.querySelector(`.event__input--destination`)
       .addEventListener(`input`, (evt) => {
-        const element = this.getElement();
         this._currentCity = evt.target.value;
         const destinationIndex = this._destinationsList.findIndex((it) => it.name === this._currentCity);
 
@@ -311,7 +310,7 @@ export default class PointEdit extends AbstractSmartComponent {
           this.rerender();
         }
 
-        const saveButton = element.querySelector(`.event__save-btn`);
+        const saveButton = this.getElement().querySelector(`.event__save-btn`);
         saveButton.disabled = this._isDisabled();
       });
 
@@ -335,7 +334,7 @@ export default class PointEdit extends AbstractSmartComponent {
     const cities = this._destinationsList.map((it) => it.name);
 
     const hasCity = cities.includes(this._currentCity);
-    const isValidPrice = this._currentPrice !== '' && !isNaN(this._currentPrice);
+    const isValidPrice = this._currentPrice !== `` && !isNaN(this._currentPrice);
 
     return !(hasCity && isValidPrice);
   }

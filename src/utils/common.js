@@ -80,5 +80,5 @@ export const isPast = (date) => {
 };
 
 export const parseDate = (date) => {
-  return moment(date, `DD/MM/YY hh:mm`).toDate();
+  return moment(date, `DD/MM/YY hh:mm`).toISOString();
 };

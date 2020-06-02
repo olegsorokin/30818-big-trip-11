@@ -15,24 +15,26 @@ const parseFormData = (formData, destinationsList, offersList) => {
   const city = formData.get(`event-destination`);
   const currentDestination = destinationsList.find((it) => it.name === city);
   const description = currentDestination.description;
-  const photos = currentDestination.pictures;
+  const pictures = currentDestination.pictures;
   const type = formData.get(`event-type`);
   const currentOffersList = offersList.find((it) => it.type === type).offers;
   const offers = currentOffersList.filter((it, index) => formData.get(`event-offer-${index}`));
   const startTime = formData.get(`event-start-time`);
   const endTime = formData.get(`event-end-time`);
 
-  return {
+  return new PointModel({
     type,
-    startTime: startTime ? parseDate(startTime) : null,
-    endTime: endTime ? parseDate(endTime) : null,
-    city,
-    price: Number(formData.get(`event-price`)),
+    'date_from': startTime ? parseDate(startTime) : null,
+    'date_to': endTime ? parseDate(endTime) : null,
+    'destination': {
+      'name': city,
+      description,
+      pictures
+    },
+    'base_price': Number(formData.get(`event-price`)),
     offers,
-    isFavorite: Boolean(formData.get(`event-favorite`)),
-    description,
-    photos
-  };
+    'is_favorite': Boolean(formData.get(`event-favorite`))
+  });
 };
 
 export const EmptyPoint = {

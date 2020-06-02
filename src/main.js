@@ -58,7 +58,6 @@ Promise.all([
   ])
   .then((response) => {
     const [points, destinations, offers] = response;
-    console.log(points);
     remove(loadingComponent);
     pointsModel.setPoints(points);
     render(tripMainElement, new TripInfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
