@@ -1,7 +1,9 @@
 import PointComponent from "../components/point";
 import PointEditComponent from "../components/point-edit";
+import PointModel from "../models/point";
 import {render, remove, RenderPosition, replace} from "../utils/render";
-import {cities, transferTypes} from "../const";
+import {transferTypes} from "../const";
+import {parseDate} from "../utils/common";
 
 export const Mode = {
   ADDING: `adding`,
@@ -9,11 +11,37 @@ export const Mode = {
   EDIT: `edit`,
 };
 
+const parseFormData = (formData, destinationsList, offersList) => {
+  const city = formData.get(`event-destination`);
+  const currentDestination = destinationsList.find((it) => it.name === city);
+  const description = currentDestination.description;
+  const pictures = currentDestination.pictures;
+  const type = formData.get(`event-type`);
+  const currentOffersList = offersList.find((it) => it.type === type).offers;
+  const offers = currentOffersList.filter((it, index) => formData.get(`event-offer-${index}`));
+  const startTime = formData.get(`event-start-time`);
+  const endTime = formData.get(`event-end-time`);
+
+  return new PointModel({
+    type,
+    offers,
+    'date_from': startTime ? parseDate(startTime) : null,
+    'date_to': endTime ? parseDate(endTime) : null,
+    'destination': {
+      'name': city,
+      description,
+      pictures
+    },
+    'base_price': Number(formData.get(`event-price`)),
+    'is_favorite': Boolean(formData.get(`event-favorite`))
+  });
+};
+
 export const EmptyPoint = {
   type: transferTypes[0],
-  city: cities[0],
-  startTime: null,
-  endTime: null,
+  city: ``,
+  startTime: new Date(),
+  endTime: new Date(),
   price: 0,
   offers: [],
   pictures: [],
@@ -22,10 +50,12 @@ export const EmptyPoint = {
 };
 
 export default class PointController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, destinations, offers) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._destinations = destinations;
+    this._offers = offers;
     this._mode = Mode.DEFAULT;
 
     this._pointComponent = null;
@@ -40,7 +70,7 @@ export default class PointController {
     this._mode = mode;
 
     this._pointComponent = new PointComponent(point);
-    this._pointEditComponent = new PointEditComponent(point);
+    this._pointEditComponent = new PointEditComponent(point, this._destinations, this._offers);
 
     this._pointComponent.setRollupButtonClickHandler(() => {
       this._replacePointToEdit();
@@ -49,22 +79,20 @@ export default class PointController {
 
     this._pointEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._pointEditComponent.getData();
-      this._onDataChange(this, point, Object.assign({}, point, data));
+
+      const formData = this._pointEditComponent.getData();
+      const data = parseFormData(formData, this._destinations, this._offers);
+
+      this._onDataChange(this, point, data);
     });
 
     this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
 
     this._pointEditComponent.setFavoritesChangeHandler((evt) => {
-      this._onDataChange(this, point, Object.assign({}, point, {
-        isFavorite: evt.target.checked
-      }));
-    });
+      const newPoint = PointModel.clone(point);
+      newPoint.isFavorite = evt.target.checked;
 
-    this._pointEditComponent.setTypeChangeHandler((evt) => {
-      this._onDataChange(this, point, Object.assign({}, point, {
-        type: evt.target.value
-      }));
+      this._onDataChange(this, point, newPoint);
     });
 
     switch (mode) {
@@ -83,7 +111,7 @@ export default class PointController {
           remove(oldPointEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._pointEditComponent, RenderPosition.BEFOREEND);
+        render(this._container, this._pointEditComponent, RenderPosition.AFTERBEGIN);
         break;
     }
   }

@@ -6,11 +6,11 @@ export const getAllPoints = (points) => {
 };
 
 export const getFuturePoints = (points) => {
-  return points.filter((it) => isFuture(it));
+  return points.filter((it) => isFuture(it.startTime));
 };
 
 export const getPastPoints = (points) => {
-  return points.filter((it) => isPast(it));
+  return points.filter((it) => isPast(it.endTime));
 };
 
 export const getPointsByFilter = (points, filterType) => {

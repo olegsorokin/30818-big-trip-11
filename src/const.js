@@ -6,39 +6,20 @@ export const activityTypes = [
   `check-in`, `sightseeing`, `restaurant`
 ];
 
+export const typesMap = {
+  taxi: `Taxi`,
+  bus: `Bus`,
+  train: `Train`,
+  ship: `Ship`,
+  transport: `Transport`,
+  drive: `Drive`,
+  flight: `Flight`,
+  'check-in': `Check-in`,
+  sightseeing: `Sightseeing`,
+  restaurant: `Restaurant`
+}
+
 export const allTypes = [...transferTypes, ...activityTypes];
-
-export const cities = [
-  `Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`
-];
-
-export const offersList = [
-  {
-    type: `luggage`,
-    title: `Add luggage`,
-    price: 10
-  },
-  {
-    type: `comfort`,
-    title: `Switch to comfort class`,
-    price: 150
-  },
-  {
-    type: `meal`,
-    title: `Add meal`,
-    price: 2
-  },
-  {
-    type: `seats`,
-    title: `Choose seats`,
-    price: 9
-  },
-  {
-    type: `train`,
-    title: `Travel by train`,
-    price: 40
-  }
-];
 
 export const FilterType = {
   ALL: `everything`,

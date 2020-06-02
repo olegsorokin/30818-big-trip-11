@@ -1,37 +1,18 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {formatDate, parseDate} from "../utils/common";
-import {cities, activityTypes, transferTypes, offersList} from "../const";
+import {formatDate} from "../utils/common";
+import {activityTypes, transferTypes, typesMap} from "../const";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const isAllowableCity = (city) => {
-  return cities.includes(city);
-};
-
-const parseFormData = (formData) => {
-  const offers = offersList.filter((offer) => formData.get(`event-offer-${offer.type}`));
-  const startTime = formData.get(`event-start-time`);
-  const endTime = formData.get(`event-end-time`);
-
-  return {
-    startTime: startTime ? parseDate(startTime) : null,
-    endTime: endTime ? parseDate(endTime) : null,
-    type: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    price: formData.get(`event-price`),
-    offers
-  };
-};
-
-const createOfferMarkup = (offer, isChecked) => {
-  const {type, title, price} = offer;
+const createOfferMarkup = (offer, index, isChecked) => {
+  const {title, price} = offer;
   const checked = isChecked ? `checked` : ``;
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${checked}>
-      <label class="event__offer-label" for="event-offer-${type}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}-1" type="checkbox" name="event-offer-${index}" ${checked}>
+      <label class="event__offer-label" for="event-offer-${index}-1">
         <span class="event__offer-title">${title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -40,13 +21,13 @@ const createOfferMarkup = (offer, isChecked) => {
   );
 };
 
-const generateOffersMarkup = (pointOffers) => {
+const generateOffersMarkup = (pointOffers, offersList) => {
   return offersList
-    .map((offer) => createOfferMarkup(offer, pointOffers.some((pointOffer) => pointOffer.type === offer.type)))
+    .map((offer, index) => createOfferMarkup(offer, index, pointOffers.some((pointOffer) => pointOffer.title === offer.title)))
     .join(`\n`);
 };
 
-const createDestinationOptionsMarkup = () => {
+const createDestinationOptionsMarkup = (cities) => {
   return cities
     .map((city) => `<option value="${city}"></option>`)
     .join(`\n`);
@@ -58,7 +39,7 @@ const createTypeMarkup = (type, index, currentType) => {
   return (
     `<div class="event__type-item">
       <input id="event-type-${type}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${index}">${type}</label>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${index}">${typesMap[type]}</label>
     </div>`
   );
 };
@@ -75,24 +56,26 @@ const generatePicturesMarkup = (pictures) => {
   }
 
   return pictures
-    .map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`)
+    .map((it) => `<img class="event__photo" src="${it.src}" alt="${it.description}">`)
     .join(`\n`);
 };
 
 const createPointEditTemplate = (point, options) => {
-  const {type, startTime, endTime, pictures, description, offers, isFavorite} = point;
-  const {currentCity: city, currentPrice: price} = options;
+  const {startTime, endTime, offers, isFavorite} = point;
+  const {currentType: type, currentPictures, currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
 
-  const destinationOptionsMarkup = createDestinationOptionsMarkup();
+  const citiesList = destinationsList.map((it) => it.name);
+  const offersListByType = offersList.find((it) => it.type === type).offers;
 
+  const destinationOptionsMarkup = createDestinationOptionsMarkup(citiesList);
   const getStartTime = () => formatDate(startTime);
   const getEndTime = () => formatDate(endTime);
   const transfersMarkup = generateTypesMarkup(transferTypes, type);
   const activityMarkup = generateTypesMarkup(activityTypes, type);
-  const picturesMarkup = generatePicturesMarkup(pictures);
-  const offersMarkup = generateOffersMarkup(offers);
+  const picturesMarkup = generatePicturesMarkup(currentPictures);
+  const offersMarkup = generateOffersMarkup(offers, offersListByType);
   const getTitle = () => {
-    return activityTypes.includes(type) ? `${type} in` : `${type} to`;
+    return activityTypes.includes(type) ? `${typesMap[type]} in` : `${typesMap[type]} to`;
   };
   const isBlockSaveButton = false;
 
@@ -123,7 +106,7 @@ const createPointEditTemplate = (point, options) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${getTitle()}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${destinationOptionsMarkup}
           </datalist>
@@ -146,7 +129,7 @@ const createPointEditTemplate = (point, options) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isBlockSaveButton ? `disabled` : ``}>Save</button>
@@ -175,7 +158,7 @@ const createPointEditTemplate = (point, options) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          <p class="event__destination-description">${currentDescription}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
@@ -189,17 +172,21 @@ const createPointEditTemplate = (point, options) => {
 };
 
 export default class PointEdit extends AbstractSmartComponent {
-  constructor(point) {
+  constructor(point, destinations, offers) {
     super();
 
     this._point = point;
+    this._destinationsList = destinations;
+    this._offersList = offers;
     this._currentCity = point.city;
     this._currentPrice = point.price;
+    this._currentDescription = point.description;
+    this._currentType = point.type;
+    this._currentPictures = point.pictures;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
     this._favoritesChangeHandler = null;
-    this._typeChangeHandler = null;
     this._deleteButtonClickHandler = null;
 
     this._applyFlatpickr();
@@ -209,7 +196,13 @@ export default class PointEdit extends AbstractSmartComponent {
   getTemplate() {
     return createPointEditTemplate(this._point, {
       currentCity: this._currentCity,
-      currentPrice: this._currentPrice
+      currentPrice: this._currentPrice,
+      currentDescription: this._currentDescription,
+      currentType: this._currentType,
+      currentPictures: this._currentPictures,
+
+      destinationsList: this._destinationsList,
+      offersList: this._offersList
     });
   }
 
@@ -231,15 +224,12 @@ export default class PointEdit extends AbstractSmartComponent {
     this.setSubmitHandler(this._submitHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setFavoritesChangeHandler(this._favoritesChangeHandler);
-    this.setTypeChangeHandler(this._typeChangeHandler);
     this._subscribeOnEvents();
   }
 
   getData() {
     const form = this.getElement();
-    const formData = new FormData(form);
-
-    return parseFormData(formData);
+    return new FormData(form);
   }
 
   setSubmitHandler(handler) {
@@ -261,12 +251,6 @@ export default class PointEdit extends AbstractSmartComponent {
     this._favoritesChangeHandler = handler;
   }
 
-  setTypeChangeHandler(handler) {
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, handler);
-
-    this._typeChangeHandler = handler;
-  }
-
   rerender() {
     super.rerender();
 
@@ -278,6 +262,9 @@ export default class PointEdit extends AbstractSmartComponent {
 
     this._currentCity = point.city;
     this._currentPrice = point.price;
+    this._currentDescription = point.description;
+    this._currentType = point.type;
+    this._currentPictures = point.pictures;
 
     this.rerender();
   }
@@ -314,9 +301,17 @@ export default class PointEdit extends AbstractSmartComponent {
     element.querySelector(`.event__input--destination`)
       .addEventListener(`input`, (evt) => {
         this._currentCity = evt.target.value;
+        const destinationIndex = this._destinationsList.findIndex((it) => it.name === this._currentCity);
+
+        if (destinationIndex !== -1) {
+          this._currentDescription = this._destinationsList[destinationIndex].description;
+          this._currentPictures = this._destinationsList[destinationIndex].pictures;
+
+          this.rerender();
+        }
 
         const saveButton = this.getElement().querySelector(`.event__save-btn`);
-        saveButton.disabled = !isAllowableCity(this._currentCity);
+        saveButton.disabled = this._isDisabled();
       });
 
     element.querySelector(`.event__input--price`)
@@ -324,7 +319,23 @@ export default class PointEdit extends AbstractSmartComponent {
         this._currentPrice = evt.target.value;
 
         const saveButton = this.getElement().querySelector(`.event__save-btn`);
-        saveButton.disabled = isNaN(this._currentPrice);
+        saveButton.disabled = this._isDisabled();
       });
+
+    element.querySelector(`.event__type-list`)
+      .addEventListener(`change`, (evt) => {
+        this._currentType = evt.target.value;
+
+        this.rerender();
+      });
+  }
+
+  _isDisabled() {
+    const cities = this._destinationsList.map((it) => it.name);
+
+    const hasCity = cities.includes(this._currentCity);
+    const isValidPrice = this._currentPrice !== `` && !isNaN(this._currentPrice);
+
+    return !(hasCity && isValidPrice);
   }
 }

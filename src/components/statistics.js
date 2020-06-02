@@ -174,10 +174,10 @@ const renderTimeChart = (transportCtx, points) => {
 };
 
 export default class Statistics extends AbstractSmartComponent {
-  constructor(points) {
+  constructor(pointsModel) {
     super();
 
-    this._points = points;
+    this._points = pointsModel;
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;
@@ -214,9 +214,9 @@ export default class Statistics extends AbstractSmartComponent {
 
     this._resetCharts();
 
-    this._moneyChart = renderMoneyChart(moneyCtx, this._points);
-    this._transportChart = renderTransportChart(transportCtx, this._points);
-    this._timeChart = renderTimeChart(timeCtx, this._points);
+    this._moneyChart = renderMoneyChart(moneyCtx, this._points.getPointsAll());
+    this._transportChart = renderTransportChart(transportCtx, this._points.getPointsAll());
+    this._timeChart = renderTimeChart(timeCtx, this._points.getPointsAll());
   }
 
   _resetCharts() {
