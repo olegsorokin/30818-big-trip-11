@@ -49,13 +49,13 @@ addEventButton.addEventListener(`click`, () => {
   statisticsComponent.hide();
   tripController.show();
   tripController.createPoint();
-})
+});
 
 Promise.all([
-    api.getPoints(),
-    api.getDestinations(),
-    api.getOffers()
-  ])
+  api.getPoints(),
+  api.getDestinations(),
+  api.getOffers()
+])
   .then((response) => {
     const [points, destinations, offers] = response;
     remove(loadingComponent);

@@ -29,7 +29,7 @@ const API = class {
 
   createPoint(point) {
     return this._load({
-      url: `points/${id}`,
+      url: `points`,
       method: Method.POST,
       body: JSON.stringify(point.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
@@ -72,6 +72,6 @@ const API = class {
         throw err;
       });
   }
-}
+};
 
 export default API;

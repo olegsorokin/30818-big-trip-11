@@ -7,17 +7,17 @@ export const activityTypes = [
 ];
 
 export const typesMap = {
-  taxi: `Taxi`,
-  bus: `Bus`,
-  train: `Train`,
-  ship: `Ship`,
-  transport: `Transport`,
-  drive: `Drive`,
-  flight: `Flight`,
-  'check-in': `Check-in`,
-  sightseeing: `Sightseeing`,
-  restaurant: `Restaurant`
-}
+  "taxi": `Taxi`,
+  "bus": `Bus`,
+  "train": `Train`,
+  "ship": `Ship`,
+  "transport": `Transport`,
+  "drive": `Drive`,
+  "flight": `Flight`,
+  "check-in": `Check-in`,
+  "sightseeing": `Sightseeing`,
+  "restaurant": `Restaurant`
+};
 
 export const allTypes = [...transferTypes, ...activityTypes];
 
