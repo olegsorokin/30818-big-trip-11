@@ -24,6 +24,7 @@ const parseFormData = (formData, destinationsList, offersList) => {
 
   return new PointModel({
     type,
+    offers,
     'date_from': startTime ? parseDate(startTime) : null,
     'date_to': endTime ? parseDate(endTime) : null,
     'destination': {
@@ -32,7 +33,6 @@ const parseFormData = (formData, destinationsList, offersList) => {
       pictures
     },
     'base_price': Number(formData.get(`event-price`)),
-    offers,
     'is_favorite': Boolean(formData.get(`event-favorite`))
   });
 };
@@ -83,7 +83,7 @@ export default class PointController {
       const formData = this._pointEditComponent.getData();
       const data = parseFormData(formData, this._destinations, this._offers);
 
-      this._onDataChange(this, point, Object.assign({}, point, data));
+      this._onDataChange(this, point, data);
     });
 
     this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
