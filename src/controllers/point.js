@@ -39,10 +39,12 @@ export const EmptyPoint = {
 };
 
 export default class PointController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, destinations, offers) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._destinations = destinations;
+    this._offers = offers;
     this._mode = Mode.DEFAULT;
 
     this._pointComponent = null;
@@ -57,7 +59,7 @@ export default class PointController {
     this._mode = mode;
 
     this._pointComponent = new PointComponent(point);
-    this._pointEditComponent = new PointEditComponent(point);
+    this._pointEditComponent = new PointEditComponent(point, this._destinations, this._offers);
 
     this._pointComponent.setRollupButtonClickHandler(() => {
       this._replacePointToEdit();

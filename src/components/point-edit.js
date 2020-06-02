@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {formatDate} from "../utils/common";
-import {cities, activityTypes, transferTypes, offersList} from "../const";
+import {cities, activityTypes, transferTypes} from "../const";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -25,9 +25,9 @@ const createOfferMarkup = (offer, isChecked) => {
   );
 };
 
-const generateOffersMarkup = (pointOffers) => {
+const generateOffersMarkup = (pointOffers, offersList) => {
   return offersList
-    .map((offer) => createOfferMarkup(offer, pointOffers.some((pointOffer) => pointOffer.type === offer.type)))
+    .map((offer) => createOfferMarkup(offer, pointOffers.some((pointOffer) => pointOffer.title === offer.title)))
     .join(`\n`);
 };
 
@@ -66,16 +66,17 @@ const generatePicturesMarkup = (pictures) => {
 
 const createPointEditTemplate = (point, options) => {
   const {type, startTime, endTime, pictures, description, offers, isFavorite} = point;
-  const {currentCity: city, currentPrice: price} = options;
+  const {currentCity: city, currentPrice: price, destinationsList, offersList} = options;
 
   const destinationOptionsMarkup = createDestinationOptionsMarkup();
+  const offersListByType = offersList.find((it) => it.type === type).offers;
 
   const getStartTime = () => formatDate(startTime);
   const getEndTime = () => formatDate(endTime);
   const transfersMarkup = generateTypesMarkup(transferTypes, type);
   const activityMarkup = generateTypesMarkup(activityTypes, type);
   const picturesMarkup = generatePicturesMarkup(pictures);
-  const offersMarkup = generateOffersMarkup(offers);
+  const offersMarkup = generateOffersMarkup(offers, offersListByType);
   const getTitle = () => {
     return activityTypes.includes(type) ? `${type} in` : `${type} to`;
   };
@@ -174,10 +175,12 @@ const createPointEditTemplate = (point, options) => {
 };
 
 export default class PointEdit extends AbstractSmartComponent {
-  constructor(point) {
+  constructor(point, destinations, offers) {
     super();
 
     this._point = point;
+    this._destinationsList = destinations;
+    this._offersList = offers;
     this._currentCity = point.city;
     this._currentPrice = point.price;
     this._flatpickrStartDate = null;
@@ -194,7 +197,9 @@ export default class PointEdit extends AbstractSmartComponent {
   getTemplate() {
     return createPointEditTemplate(this._point, {
       currentCity: this._currentCity,
-      currentPrice: this._currentPrice
+      currentPrice: this._currentPrice,
+      destinationsList: this._destinationsList,
+      offersList : this._offersList
     });
   }
 

@@ -61,5 +61,5 @@ Promise.all([
     remove(loadingComponent);
     pointsModel.setPoints(points);
     render(tripMainElement, new TripInfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
-    tripController.render();
+    tripController.render(destinations, offers);
   });
