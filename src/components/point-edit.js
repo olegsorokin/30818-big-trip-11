@@ -39,7 +39,7 @@ const createTypeMarkup = (type, index, currentType) => {
   return (
     `<div class="event__type-item">
       <input id="event-type-${type}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${index}">${type}</label>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${index}">${typesMap[type]}</label>
     </div>`
   );
 };
@@ -56,13 +56,13 @@ const generatePicturesMarkup = (pictures) => {
   }
 
   return pictures
-    .map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`)
+    .map((it) => `<img class="event__photo" src="${it.src}" alt="${it.description}">`)
     .join(`\n`);
 };
 
 const createPointEditTemplate = (point, options) => {
-  const {startTime, endTime, pictures, offers, isFavorite} = point;
-  const {currentType: type, currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
+  const {startTime, endTime, offers, isFavorite} = point;
+  const {currentType: type, currentPictures, currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
 
   const citiesList = destinationsList.map((it) => it.name);
   const offersListByType = offersList.find((it) => it.type === type).offers;
@@ -72,7 +72,7 @@ const createPointEditTemplate = (point, options) => {
   const getEndTime = () => formatDate(endTime);
   const transfersMarkup = generateTypesMarkup(transferTypes, type);
   const activityMarkup = generateTypesMarkup(activityTypes, type);
-  const picturesMarkup = generatePicturesMarkup(pictures);
+  const picturesMarkup = generatePicturesMarkup(currentPictures);
   const offersMarkup = generateOffersMarkup(offers, offersListByType);
   const getTitle = () => {
     return activityTypes.includes(type) ? `${typesMap[type]} in` : `${typesMap[type]} to`;
@@ -182,11 +182,11 @@ export default class PointEdit extends AbstractSmartComponent {
     this._currentPrice = point.price;
     this._currentDescription = point.description;
     this._currentType = point.type;
+    this._currentPictures = point.pictures;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
     this._favoritesChangeHandler = null;
-    this._typeChangeHandler = null;
     this._deleteButtonClickHandler = null;
 
     this._applyFlatpickr();
@@ -199,6 +199,7 @@ export default class PointEdit extends AbstractSmartComponent {
       currentPrice: this._currentPrice,
       currentDescription: this._currentDescription,
       currentType: this._currentType,
+      currentPictures: this._currentPictures,
 
       destinationsList: this._destinationsList,
       offersList : this._offersList
@@ -263,6 +264,7 @@ export default class PointEdit extends AbstractSmartComponent {
     this._currentPrice = point.price;
     this._currentDescription = point.description;
     this._currentType = point.type;
+    this._currentPictures = point.pictures;
 
     this.rerender();
   }
@@ -304,7 +306,9 @@ export default class PointEdit extends AbstractSmartComponent {
 
         if (destinationIndex !== -1) {
           this._currentDescription = this._destinationsList[destinationIndex].description;
-          element.querySelector(`.event__destination-description`).innerText = this._currentDescription;
+          this._currentPictures = this._destinationsList[destinationIndex].pictures;
+
+          this.rerender();
         }
 
         const saveButton = element.querySelector(`.event__save-btn`);

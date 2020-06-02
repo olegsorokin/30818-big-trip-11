@@ -8,7 +8,7 @@ export default class Point {
     this.offers = data.offers;
     this.city = data.destination.name;
     this.description = data.destination.description || ``;
-    this.pictures = data.destination.pictures.map((it) => it.src);
+    this.pictures = data.destination.pictures;
     this.isFavorite = Boolean(data.is_favorite);
   }
 
@@ -24,7 +24,7 @@ export default class Point {
       "destination": {
         "name": this.city,
         "description": this.description,
-        "pictures": this.pictures.map((it) => ({src: it}))
+        "pictures": this.pictures
       }
     };
   }
