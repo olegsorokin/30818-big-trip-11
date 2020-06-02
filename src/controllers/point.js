@@ -84,12 +84,6 @@ export default class PointController {
       this._onDataChange(this, point, newPoint);
     });
 
-    this._pointEditComponent.setTypeChangeHandler((evt) => {
-      this._onDataChange(this, point, Object.assign({}, point, {
-        type: evt.target.value
-      }));
-    });
-
     switch (mode) {
       case Mode.DEFAULT:
         if (oldPointComponent && oldPointEditComponent) {

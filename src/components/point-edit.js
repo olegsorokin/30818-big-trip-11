@@ -61,8 +61,8 @@ const generatePicturesMarkup = (pictures) => {
 };
 
 const createPointEditTemplate = (point, options) => {
-  const {type, startTime, endTime, pictures, offers, isFavorite} = point;
-  const {currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
+  const {startTime, endTime, pictures, offers, isFavorite} = point;
+  const {currentType: type, currentCity, currentPrice, currentDescription, destinationsList, offersList} = options;
 
   const citiesList = destinationsList.map((it) => it.name);
   const offersListByType = offersList.find((it) => it.type === type).offers;
@@ -181,6 +181,7 @@ export default class PointEdit extends AbstractSmartComponent {
     this._currentCity = point.city;
     this._currentPrice = point.price;
     this._currentDescription = point.description;
+    this._currentType = point.type;
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
@@ -197,6 +198,7 @@ export default class PointEdit extends AbstractSmartComponent {
       currentCity: this._currentCity,
       currentPrice: this._currentPrice,
       currentDescription: this._currentDescription,
+      currentType: this._currentType,
 
       destinationsList: this._destinationsList,
       offersList : this._offersList
@@ -221,7 +223,6 @@ export default class PointEdit extends AbstractSmartComponent {
     this.setSubmitHandler(this._submitHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setFavoritesChangeHandler(this._favoritesChangeHandler);
-    this.setTypeChangeHandler(this._typeChangeHandler);
     this._subscribeOnEvents();
   }
 
@@ -249,12 +250,6 @@ export default class PointEdit extends AbstractSmartComponent {
     this._favoritesChangeHandler = handler;
   }
 
-  setTypeChangeHandler(handler) {
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, handler);
-
-    this._typeChangeHandler = handler;
-  }
-
   rerender() {
     super.rerender();
 
@@ -267,6 +262,7 @@ export default class PointEdit extends AbstractSmartComponent {
     this._currentCity = point.city;
     this._currentPrice = point.price;
     this._currentDescription = point.description;
+    this._currentType = point.type;
 
     this.rerender();
   }
@@ -321,6 +317,13 @@ export default class PointEdit extends AbstractSmartComponent {
 
         const saveButton = this.getElement().querySelector(`.event__save-btn`);
         saveButton.disabled = this._isDisabled();
+      });
+
+    element.querySelector(`.event__type-list`)
+      .addEventListener(`change`, (evt) => {
+        this._currentType = evt.target.value;
+
+        this.rerender();
       });
   }
 
