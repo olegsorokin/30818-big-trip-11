@@ -29,8 +29,8 @@ const parseFormData = (formData) => {
 export const EmptyPoint = {
   type: transferTypes[0],
   city: cities[0],
-  startTime: null,
-  endTime: null,
+  startTime: new Date(),
+  endTime: new Date(),
   price: 0,
   offers: [],
   pictures: [],
@@ -104,7 +104,7 @@ export default class PointController {
           remove(oldPointEditComponent);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._pointEditComponent, RenderPosition.BEFOREEND);
+        render(this._container, this._pointEditComponent, RenderPosition.AFTERBEGIN);
         break;
     }
   }

@@ -1,5 +1,5 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {formatDate, parseDate} from "../utils/common";
+import {formatDate} from "../utils/common";
 import {cities, activityTypes, transferTypes, offersList} from "../const";
 import flatpickr from "flatpickr";
 

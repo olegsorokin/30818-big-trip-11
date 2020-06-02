@@ -1,12 +1,12 @@
 import API from "./api";
+import DestinationsModel from "./models/destinations";
 import FilterController from "./controllers/filter";
+import LoadingComponent from "./components/loading";
 import PointsModel from "./models/points";
 import SiteMenuComponent, {MenuItem} from "./components/site-menu";
-import LoadingComponent from "./components/loading";
 import StatisticsComponent from "./components/statistics";
-import TripInfoComponent from "./components/trip-info";
 import TripController from "./controllers/trip";
-import DestinationsModel from "./models/destinations";
+import TripInfoComponent from "./components/trip-info";
 import {remove, render, RenderPosition} from "./utils/render";
 
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yQQq=`;
@@ -26,7 +26,6 @@ const filterController = new FilterController(tripControlsElement, pointsModel);
 const tripController = new TripController(tripEventsElement, pointsModel, api);
 const statisticsComponent = new StatisticsComponent(pointsModel);
 
-render(tripMainElement, new TripInfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
 render(siteMenuTitle, siteMenuComponent, RenderPosition.AFTEREND);
 render(tripEventsElement, loadingComponent, RenderPosition.BEFOREEND);
 filterController.render();
@@ -57,6 +56,7 @@ api.getPoints()
   .then((points) => {
     remove(loadingComponent);
     pointsModel.setPoints(points);
+    render(tripMainElement, new TripInfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
     tripController.render();
   });
 

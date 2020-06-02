@@ -2,8 +2,8 @@ export default class Point {
   constructor(data) {
     this.id = data.id;
     this.type = data.type;
-    this.startTime = data.date_from;
-    this.endTime = data.date_to;
+    this.startTime = new Date(data.date_from);
+    this.endTime = new Date(data.date_to);
     this.price = data.base_price;
     this.offers = data.offers;
     this.city = data.destination.name;

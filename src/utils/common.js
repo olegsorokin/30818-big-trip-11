@@ -72,11 +72,11 @@ export const getDayTimeStamp = (time) => {
 };
 
 export const isFuture = (date) => {
-  return moment().isAfter(date);
+  return moment().isBefore(date);
 };
 
 export const isPast = (date) => {
-  return moment().isBefore(date);
+  return moment().isAfter(date);
 };
 
 export const parseDate = (date) => {
