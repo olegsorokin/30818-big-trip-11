@@ -85,10 +85,20 @@ export default class PointController {
       const formData = this._pointEditComponent.getData();
       const data = parseFormData(formData, this._destinations, this._offers);
 
+      this._pointEditComponent.setData({
+        saveButtonText: `Saving...`,
+      });
+
       this._onDataChange(this, point, data);
     });
 
-    this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
+    this._pointEditComponent.setDeleteButtonClickHandler(() => {
+      this._pointEditComponent.setData({
+        deleteButtonText: `Deleting...`,
+      });
+
+      this._onDataChange(this, point, null);
+    });
 
     this._pointEditComponent.setFavoritesChangeHandler((evt) => {
       const newPoint = PointModel.clone(point);
@@ -137,6 +147,11 @@ export default class PointController {
     setTimeout(() => {
       this._pointEditComponent.getElement().style.animation = ``;
       this._pointComponent.getElement().style.animation = ``;
+
+      this._pointEditComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
