@@ -1,5 +1,4 @@
 import Point from "./models/point";
-import Destinations from "./models/destinations";
 
 const Method = {
   GET: `GET`,
@@ -43,8 +42,13 @@ const API = class {
   getDestinations() {
     return this._load({url: `destinations`})
       .then(checkStatus)
-      .then((response) => response.json())
-      .then(Destinations.parseDestinations);
+      .then((response) => response.json());
+  }
+
+  getOffers() {
+    return this._load({url: `offers`})
+      .then(checkStatus)
+      .then((response) => response.json());
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

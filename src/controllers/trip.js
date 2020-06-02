@@ -134,6 +134,11 @@ export default class TripController {
   }
 
   _renderPoints(points) {
+    if (points.length === 0) {
+      render(this._container, this._noPointsComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
     const newPoints = renderDays(this._daysListComponent.getElement(), points, this._sortComponent.getSortType(), this._onDataChange, this._onViewChange);
     this._showedPointControllers = this._showedPointControllers.concat(newPoints);
   }

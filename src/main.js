@@ -1,5 +1,4 @@
 import API from "./api";
-import DestinationsModel from "./models/destinations";
 import FilterController from "./controllers/filter";
 import LoadingComponent from "./components/loading";
 import PointsModel from "./models/points";
@@ -52,13 +51,15 @@ addEventButton.addEventListener(`click`, () => {
   tripController.createPoint();
 })
 
-api.getPoints()
-  .then((points) => {
+Promise.all([
+    api.getPoints(),
+    api.getDestinations(),
+    api.getOffers()
+  ])
+  .then((response) => {
+    const [points, destinations, offers] = response;
     remove(loadingComponent);
     pointsModel.setPoints(points);
     render(tripMainElement, new TripInfoComponent(pointsModel), RenderPosition.AFTERBEGIN);
     tripController.render();
   });
-
-api.getDestinations()
-  .then((destinations) => {});
