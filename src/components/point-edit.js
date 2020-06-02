@@ -5,10 +5,6 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const isAllowableCity = (city) => {
-  return cities.includes(city);
-};
-
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
   const checked = isChecked ? `checked` : ``;
@@ -31,7 +27,7 @@ const generateOffersMarkup = (pointOffers, offersList) => {
     .join(`\n`);
 };
 
-const createDestinationOptionsMarkup = () => {
+const createDestinationOptionsMarkup = (cities) => {
   return cities
     .map((city) => `<option value="${city}"></option>`)
     .join(`\n`);
@@ -68,9 +64,10 @@ const createPointEditTemplate = (point, options) => {
   const {type, startTime, endTime, pictures, description, offers, isFavorite} = point;
   const {currentCity: city, currentPrice: price, destinationsList, offersList} = options;
 
-  const destinationOptionsMarkup = createDestinationOptionsMarkup();
+  const citiesList = destinationsList.map((it) => it.name);
   const offersListByType = offersList.find((it) => it.type === type).offers;
 
+  const destinationOptionsMarkup = createDestinationOptionsMarkup(citiesList);
   const getStartTime = () => formatDate(startTime);
   const getEndTime = () => formatDate(endTime);
   const transfersMarkup = generateTypesMarkup(transferTypes, type);
@@ -304,7 +301,7 @@ export default class PointEdit extends AbstractSmartComponent {
         this._currentCity = evt.target.value;
 
         const saveButton = this.getElement().querySelector(`.event__save-btn`);
-        saveButton.disabled = !isAllowableCity(this._currentCity);
+        saveButton.disabled = !this._destinationsList.map((it) => it.name).includes(this._currentCity);
       });
 
     element.querySelector(`.event__input--price`)
