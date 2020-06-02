@@ -8,38 +8,6 @@ export const activityTypes = [
 
 export const allTypes = [...transferTypes, ...activityTypes];
 
-export const cities = [
-  `Amsterdam`, `Chamonix`, `Geneva`, `Saint Petersburg`
-];
-
-export const offersList = [
-  {
-    type: `luggage`,
-    title: `Add luggage`,
-    price: 10
-  },
-  {
-    type: `comfort`,
-    title: `Switch to comfort class`,
-    price: 150
-  },
-  {
-    type: `meal`,
-    title: `Add meal`,
-    price: 2
-  },
-  {
-    type: `seats`,
-    title: `Choose seats`,
-    price: 9
-  },
-  {
-    type: `train`,
-    title: `Travel by train`,
-    price: 40
-  }
-];
-
 export const FilterType = {
   ALL: `everything`,
   FUTURE: `future`,

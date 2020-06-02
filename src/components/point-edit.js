@@ -1,18 +1,18 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {formatDate} from "../utils/common";
-import {cities, activityTypes, transferTypes} from "../const";
+import {activityTypes, transferTypes} from "../const";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 
-const createOfferMarkup = (offer, isChecked) => {
-  const {type, title, price} = offer;
+const createOfferMarkup = (offer, index, isChecked) => {
+  const {title, price} = offer;
   const checked = isChecked ? `checked` : ``;
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${checked}>
-      <label class="event__offer-label" for="event-offer-${type}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}-1" type="checkbox" name="event-offer-${index}" ${checked}>
+      <label class="event__offer-label" for="event-offer-${index}-1">
         <span class="event__offer-title">${title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -23,7 +23,7 @@ const createOfferMarkup = (offer, isChecked) => {
 
 const generateOffersMarkup = (pointOffers, offersList) => {
   return offersList
-    .map((offer) => createOfferMarkup(offer, pointOffers.some((pointOffer) => pointOffer.title === offer.title)))
+    .map((offer, index) => createOfferMarkup(offer, index, pointOffers.some((pointOffer) => pointOffer.title === offer.title)))
     .join(`\n`);
 };
 

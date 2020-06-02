@@ -2,7 +2,7 @@ import PointComponent from "../components/point";
 import PointEditComponent from "../components/point-edit";
 import PointModel from "../models/point";
 import {render, remove, RenderPosition, replace} from "../utils/render";
-import {cities, offersList, transferTypes} from "../const";
+import {transferTypes} from "../const";
 import {parseDate} from "../utils/common";
 
 export const Mode = {
@@ -11,24 +11,33 @@ export const Mode = {
   EDIT: `edit`,
 };
 
-const parseFormData = (formData) => {
-  const offers = offersList.filter((offer) => formData.get(`event-offer-${offer.type}`));
+const parseFormData = (formData, destinationsList, offersList) => {
+  const city = formData.get(`event-destination`);
+  const currentDestination = destinationsList.find((it) => it.name === city);
+  const description = currentDestination.description;
+  const photos = currentDestination.pictures;
+  const type = formData.get(`event-type`);
+  const currentOffersList = offersList.find((it) => it.type === type).offers;
+  const offers = currentOffersList.filter((it, index) => formData.get(`event-offer-${index}`));
   const startTime = formData.get(`event-start-time`);
   const endTime = formData.get(`event-end-time`);
 
   return {
+    type,
     startTime: startTime ? parseDate(startTime) : null,
     endTime: endTime ? parseDate(endTime) : null,
-    type: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    price: formData.get(`event-price`),
-    offers
+    city,
+    price: Number(formData.get(`event-price`)),
+    offers,
+    isFavorite: Boolean(formData.get(`event-favorite`)),
+    description,
+    photos
   };
 };
 
 export const EmptyPoint = {
   type: transferTypes[0],
-  city: cities[0],
+  city: ``,
   startTime: new Date(),
   endTime: new Date(),
   price: 0,
@@ -70,9 +79,10 @@ export default class PointController {
       evt.preventDefault();
 
       const formData = this._pointEditComponent.getData();
-      const data = parseFormData(formData);
+      const data = parseFormData(formData, this._destinations, this._offers);
+      console.log(data);
 
-      this._onDataChange(this, point, Object.assign({}, point, data));
+      // this._onDataChange(this, point, Object.assign({}, point, data));
     });
 
     this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
