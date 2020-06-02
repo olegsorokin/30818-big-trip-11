@@ -9,21 +9,6 @@ const isAllowableCity = (city) => {
   return cities.includes(city);
 };
 
-const parseFormData = (formData) => {
-  const offers = offersList.filter((offer) => formData.get(`event-offer-${offer.type}`));
-  const startTime = formData.get(`event-start-time`);
-  const endTime = formData.get(`event-end-time`);
-
-  return {
-    startTime: startTime ? parseDate(startTime) : null,
-    endTime: endTime ? parseDate(endTime) : null,
-    type: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    price: formData.get(`event-price`),
-    offers
-  };
-};
-
 const createOfferMarkup = (offer, isChecked) => {
   const {type, title, price} = offer;
   const checked = isChecked ? `checked` : ``;
@@ -237,9 +222,7 @@ export default class PointEdit extends AbstractSmartComponent {
 
   getData() {
     const form = this.getElement();
-    const formData = new FormData(form);
-
-    return parseFormData(formData);
+    return new FormData(form);
   }
 
   setSubmitHandler(handler) {

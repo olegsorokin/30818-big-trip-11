@@ -1,12 +1,29 @@
 import PointComponent from "../components/point";
 import PointEditComponent from "../components/point-edit";
+import PointModel from "../models/point";
 import {render, remove, RenderPosition, replace} from "../utils/render";
-import {cities, transferTypes} from "../const";
+import {cities, offersList, transferTypes} from "../const";
+import {parseDate} from "../utils/common";
 
 export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+const parseFormData = (formData) => {
+  const offers = offersList.filter((offer) => formData.get(`event-offer-${offer.type}`));
+  const startTime = formData.get(`event-start-time`);
+  const endTime = formData.get(`event-end-time`);
+
+  return {
+    startTime: startTime ? parseDate(startTime) : null,
+    endTime: endTime ? parseDate(endTime) : null,
+    type: formData.get(`event-type`),
+    city: formData.get(`event-destination`),
+    price: formData.get(`event-price`),
+    offers
+  };
 };
 
 export const EmptyPoint = {
@@ -49,16 +66,20 @@ export default class PointController {
 
     this._pointEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._pointEditComponent.getData();
+
+      const formData = this._pointEditComponent.getData();
+      const data = parseFormData(formData);
+
       this._onDataChange(this, point, Object.assign({}, point, data));
     });
 
     this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));
 
     this._pointEditComponent.setFavoritesChangeHandler((evt) => {
-      this._onDataChange(this, point, Object.assign({}, point, {
-        isFavorite: evt.target.checked
-      }));
+      const newPoint = PointModel.clone(point);
+      newPoint.isFavorite = evt.target.checked;
+
+      this._onDataChange(this, point, newPoint);
     });
 
     this._pointEditComponent.setTypeChangeHandler((evt) => {

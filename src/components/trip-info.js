@@ -66,6 +66,6 @@ export default class TripInfo extends AbstractComponent {
   }
 
   getTemplate() {
-    return createTripInfoTemplate(this._points);
+    return createTripInfoTemplate(this._points.getPointsAll());
   }
 }
