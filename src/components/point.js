@@ -1,5 +1,5 @@
 import {formatDiff, formatISO, formatTime} from "../utils/common";
-import {activityTypes} from "../const";
+import {activityTypes, typesMap} from "../const";
 import AbstractComponent from "./abstract-component";
 
 const createOffersMarkup = (offers) => {
@@ -26,7 +26,7 @@ const createPointTemplate = (point) => {
   const getEndTime = () => formatTime(endTime);
   const duration = formatDiff(startTime, endTime);
   const getTitle = () => {
-    return activityTypes.includes(type) ? `${type} in ${city}` : `${type} to ${city}`;
+    return activityTypes.includes(type) ? `${typesMap[type]} in ${city}` : `${typesMap[type]} to ${city}`;
   };
 
   return (

@@ -80,9 +80,8 @@ export default class PointController {
 
       const formData = this._pointEditComponent.getData();
       const data = parseFormData(formData, this._destinations, this._offers);
-      console.log(data);
 
-      // this._onDataChange(this, point, Object.assign({}, point, data));
+      this._onDataChange(this, point, Object.assign({}, point, data));
     });
 
     this._pointEditComponent.setDeleteButtonClickHandler(() => this._onDataChange(this, point, null));

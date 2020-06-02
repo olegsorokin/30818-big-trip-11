@@ -1,6 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {formatDate} from "../utils/common";
-import {activityTypes, transferTypes} from "../const";
+import {activityTypes, transferTypes, typesMap} from "../const";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -75,7 +75,7 @@ const createPointEditTemplate = (point, options) => {
   const picturesMarkup = generatePicturesMarkup(pictures);
   const offersMarkup = generateOffersMarkup(offers, offersListByType);
   const getTitle = () => {
-    return activityTypes.includes(type) ? `${type} in` : `${type} to`;
+    return activityTypes.includes(type) ? `${typesMap[type]} in` : `${typesMap[type]} to`;
   };
   const isBlockSaveButton = false;
 

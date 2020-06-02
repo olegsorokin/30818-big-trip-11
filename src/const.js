@@ -6,6 +6,19 @@ export const activityTypes = [
   `check-in`, `sightseeing`, `restaurant`
 ];
 
+export const typesMap = {
+  taxi: `Taxi`,
+  bus: `Bus`,
+  train: `Train`,
+  ship: `Ship`,
+  transport: `Transport`,
+  drive: `Drive`,
+  flight: `Flight`,
+  'check-in': `Check-in`,
+  sightseeing: `Sightseeing`,
+  restaurant: `Restaurant`
+}
+
 export const allTypes = [...transferTypes, ...activityTypes];
 
 export const FilterType = {
