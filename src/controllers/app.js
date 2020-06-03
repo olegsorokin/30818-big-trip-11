@@ -22,7 +22,7 @@ export default class AppController {
 
   init() {
     this._tripInfoComponent = new TripInfoComponent(this._pointsModel);
-    render(this._container, this._tripInfoComponent, RenderPosition.AFTERBEGIN)
+    render(this._container, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
 
     const tripControlsElement = document.querySelector(`.trip-controls`);
     const tripEventsElement = document.querySelector(`.trip-events`);

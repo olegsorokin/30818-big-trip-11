@@ -34,7 +34,7 @@ export default class FilterController {
   }
 
   _getFiltersList() {
-    return  Object.values(FilterType).map((filterType) => {
+    return Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
         checked: filterType === this._activeFilterType,
