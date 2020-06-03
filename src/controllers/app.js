@@ -17,6 +17,7 @@ export default class AppController {
     this._updateTripInfo = this._updateTripInfo.bind(this);
 
     this._pointsModel.setDataChangeHandler(this._updateTripInfo);
+    this._pointsModel.setDataChangeHandler(this._checkAllowedFilter);
   }
 
   init() {
@@ -38,6 +39,7 @@ export default class AppController {
     filterController.render();
     render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
     statisticsComponent.hide();
+    addEventButton.disabled = true;
 
     siteMenuComponent.setOnChange((menuItem) => {
       switch (menuItem) {
@@ -69,10 +71,13 @@ export default class AppController {
         remove(loadingComponent);
         this._pointsModel.setPoints(points);
         tripController.render(destinations, offers);
+        addEventButton.disabled = false;
       });
   }
 
   _updateTripInfo() {
     this._tripInfoComponent.rerender();
   }
+
+  _checkAllowedFilter() {}
 }
