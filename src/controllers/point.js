@@ -7,10 +7,22 @@ import {parseDate} from "../utils/common";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
-export const Mode = {
+const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+const EmptyPoint = {
+  type: transferTypes[0],
+  city: ``,
+  startTime: new Date(),
+  endTime: new Date(),
+  price: 0,
+  offers: [],
+  pictures: [],
+  description: ``,
+  isFavorite: false
 };
 
 const parseFormData = (formData, destinationsList, offersList) => {
@@ -39,18 +51,6 @@ const parseFormData = (formData, destinationsList, offersList) => {
   });
 };
 
-export const EmptyPoint = {
-  type: transferTypes[0],
-  city: ``,
-  startTime: new Date(),
-  endTime: new Date(),
-  price: 0,
-  offers: [],
-  pictures: [],
-  description: ``,
-  isFavorite: false
-};
-
 export default class PointController {
   constructor(container, onDataChange, onViewChange, destinations, offers) {
     this._container = container;
@@ -77,6 +77,15 @@ export default class PointController {
     this._pointComponent.setRollupButtonClickHandler(() => {
       this._replacePointToEdit();
       document.addEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._pointEditComponent.setRollupButtonClickHandler(() => {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyPoint, null);
+      }
+
+      this._replaceEditToPoint();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._pointEditComponent.setSubmitHandler((evt) => {
@@ -184,3 +193,5 @@ export default class PointController {
     }
   }
 }
+
+export {Mode, EmptyPoint};

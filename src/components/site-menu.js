@@ -2,26 +2,22 @@ import AbstractComponent from "./abstract-component";
 
 const ACTIVE_CLASS = `trip-tabs__btn--active`;
 
+const MenuItem = {
+  NEW_POINT: `new`,
+  TABLE: `table`,
+  STATS: `stats`,
+};
+
 const toggleMenu = (container, currentPage) => {
   const buttons = container.getElement()
     .querySelectorAll(`.trip-tabs__btn`);
 
   Array.from(buttons)
     .forEach((btn) => {
-      if (btn.dataset.menuItem === currentPage) {
-        btn.classList.add(ACTIVE_CLASS);
-      } else {
-        btn.classList.remove(ACTIVE_CLASS);
-      }
+      btn.classList.toggle(ACTIVE_CLASS, btn.dataset.menuItem === currentPage);
     });
 
   return currentPage;
-};
-
-export const MenuItem = {
-  NEW_POINT: `new`,
-  TABLE: `table`,
-  STATS: `stats`,
 };
 
 const createSiteMenuTemplate = () => {
@@ -64,3 +60,5 @@ export default class SiteMenu extends AbstractComponent {
     });
   }
 }
+
+export {MenuItem};

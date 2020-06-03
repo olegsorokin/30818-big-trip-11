@@ -196,6 +196,7 @@ export default class PointEdit extends AbstractSmartComponent {
     this._flatpickrStartDate = null;
     this._flatpickrEndDate = null;
     this._submitHandler = null;
+    this._rollupClickHandler = null;
     this._favoritesChangeHandler = null;
     this._deleteButtonClickHandler = null;
 
@@ -232,6 +233,7 @@ export default class PointEdit extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
+    this.setRollupButtonClickHandler(this._rollupClickHandler);
     this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
     this.setFavoritesChangeHandler(this._favoritesChangeHandler);
     this._subscribeOnEvents();
@@ -251,6 +253,13 @@ export default class PointEdit extends AbstractSmartComponent {
     this.getElement().addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
+  }
+
+  setRollupButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+
+    this._rollupClickHandler = handler;
   }
 
   setDeleteButtonClickHandler(handler) {
