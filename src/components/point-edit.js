@@ -311,7 +311,6 @@ export default class PointEdit extends AbstractSmartComponent {
       allowInput: true,
       enableTime: true,
       dateFormat: `d/m/y H:i`,
-      minDate: this._point.startTime,
       defaultDate
     });
 

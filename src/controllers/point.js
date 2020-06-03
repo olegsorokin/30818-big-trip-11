@@ -94,6 +94,14 @@ export default class PointController {
       const formData = this._pointEditComponent.getData();
       const data = parseFormData(formData, this._destinations, this._offers);
 
+      if (data.startTime > data.endTime) {
+        this._pointEditComponent.getElement()
+          .querySelector(`.event__field-group--time`).classList.add(`event__field-group--error`);
+
+        this.shake();
+        return;
+      }
+
       this._pointEditComponent.setData({
         saveButtonText: `Saving...`,
       });
