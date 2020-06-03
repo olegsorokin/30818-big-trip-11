@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component";
 
-export const SortType = {
+const SortType = {
   EVENT: `sort-event`,
   TIME: `sort-time`,
   PRICE: `sort-price`
@@ -62,3 +62,5 @@ export default class Sort extends AbstractComponent {
     });
   }
 }
+
+export {SortType};

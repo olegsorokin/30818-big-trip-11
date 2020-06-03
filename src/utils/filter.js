@@ -1,19 +1,19 @@
 import {isFuture, isPast} from "./common";
 import {FilterType} from "../const";
 
-export const getAllPoints = (points) => {
+const getAllPoints = (points) => {
   return points.slice();
 };
 
-export const getFuturePoints = (points) => {
+const getFuturePoints = (points) => {
   return points.filter((it) => isFuture(it.startTime));
 };
 
-export const getPastPoints = (points) => {
+const getPastPoints = (points) => {
   return points.filter((it) => isPast(it.endTime));
 };
 
-export const getPointsByFilter = (points, filterType) => {
+const getPointsByFilter = (points, filterType) => {
   switch (filterType) {
     case FilterType.ALL:
       return getAllPoints(points);
@@ -25,3 +25,5 @@ export const getPointsByFilter = (points, filterType) => {
 
   return points;
 };
+
+export {getPointsByFilter};

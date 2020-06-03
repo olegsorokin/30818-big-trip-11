@@ -7,10 +7,22 @@ import {parseDate} from "../utils/common";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
-export const Mode = {
+const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+const EmptyPoint = {
+  type: transferTypes[0],
+  city: ``,
+  startTime: new Date(),
+  endTime: new Date(),
+  price: 0,
+  offers: [],
+  pictures: [],
+  description: ``,
+  isFavorite: false
 };
 
 const parseFormData = (formData, destinationsList, offersList) => {
@@ -37,18 +49,6 @@ const parseFormData = (formData, destinationsList, offersList) => {
     'base_price': Number(formData.get(`event-price`)),
     'is_favorite': Boolean(formData.get(`event-favorite`))
   });
-};
-
-export const EmptyPoint = {
-  type: transferTypes[0],
-  city: ``,
-  startTime: new Date(),
-  endTime: new Date(),
-  price: 0,
-  offers: [],
-  pictures: [],
-  description: ``,
-  isFavorite: false
 };
 
 export default class PointController {
@@ -79,11 +79,28 @@ export default class PointController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._pointEditComponent.setRollupButtonClickHandler(() => {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyPoint, null);
+      }
+
+      this._replaceEditToPoint();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+
     this._pointEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
 
       const formData = this._pointEditComponent.getData();
       const data = parseFormData(formData, this._destinations, this._offers);
+
+      if (data.startTime > data.endTime) {
+        this._pointEditComponent.getElement()
+          .querySelector(`.event__field-group--time`).classList.add(`event__field-group--error`);
+
+        this.shake();
+        return;
+      }
 
       this._pointEditComponent.setData({
         saveButtonText: `Saving...`,
@@ -184,3 +201,5 @@ export default class PointController {
     }
   }
 }
+
+export {Mode, EmptyPoint};

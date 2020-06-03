@@ -6,13 +6,14 @@ const getFilterNameById = (id) => {
   return id.substring(FILTER_ID_PREFIX.length);
 };
 
-const createFilterMarkup = (filter, isChecked) => {
+const createFilterMarkup = (filter, isChecked, isDisabled) => {
   const {name} = filter;
   const checked = isChecked ? `checked` : ``;
+  const disabled = isDisabled ? `disabled` : ``;
 
   return (
     `<div class="trip-filters__filter">
-      <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${checked}>
+      <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${checked} ${disabled}>
       <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
     </div>`
   );
@@ -20,7 +21,7 @@ const createFilterMarkup = (filter, isChecked) => {
 
 const createFilterTemplate = (filters) => {
   const filtersMarkup = filters
-    .map((filter) => createFilterMarkup(filter, filter.checked))
+    .map((filter) => createFilterMarkup(filter, filter.checked, filter.isDisabled))
     .join(`\n`);
 
   return (

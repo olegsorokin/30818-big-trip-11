@@ -935,6 +935,10 @@ main {
   animation: shake 0.6s;
 }
 
+.event__field-group--error {
+  border-color: red;
+}
+
 @keyframes shake {
   0%,
   100% {

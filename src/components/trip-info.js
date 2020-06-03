@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component";
+import AbstractSmartComponent from "./abstract-smart-component";
 
 const createCitiesList = (points) => {
   if (points.length === 0) {
@@ -59,7 +59,7 @@ const createTripInfoTemplate = (points) => {
   );
 };
 
-export default class TripInfo extends AbstractComponent {
+export default class TripInfo extends AbstractSmartComponent {
   constructor(points) {
     super();
 
@@ -69,4 +69,6 @@ export default class TripInfo extends AbstractComponent {
   getTemplate() {
     return createTripInfoTemplate(this._points.getPointsAll());
   }
+
+  recoveryListeners() {}
 }
